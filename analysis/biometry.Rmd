@@ -1,0 +1,16 @@
+---
+title: "R Notebook"
+author: "..."
+date: "..."
+output: html_notebook
+---
+
+```{r setup}
+SciViews::R
+options(data.io_lang = "fr") # Labels en français
+```
+
+
+```{r importation}
+biometry <- read("../data/biometry_2014.xlsx")
+```
