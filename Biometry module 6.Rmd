@@ -1,0 +1,24 @@
+---
+title: "Biometry module 6"
+output: html_document
+---
+---
+#Introduction
+Travail en groupe par rapport à l'étude de la biométrie d'une population de Belgique.
+
+##Importation des données et des outils nécessaires
+```{r}
+SciViews::R
+(biometry <- read$csv("https://docs.google.com/spreadsheets/d/1UfpZvx1_nd7d10vIMAfGVZ1vWyIuzeiKxPL0jfkNSQM/export?format=csv"))
+
+```
+
+# Etudes des données
+### Tableau résumé
+```{r}
+rmarkdown::paged_table(biometry)
+biometry1 <- filter (biometry, taille>0, masse >0 , )
+biometry_summarise <- summarise(biometry1 ,
+  "moyenne taille" = mean(taille), 
+  "moyenne masse" = mean(masse))
+knitr::kable(biometry_summarise, digits = 2)
