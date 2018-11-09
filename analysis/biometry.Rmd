@@ -18,9 +18,11 @@ biometry <- read("../data/biometry_2014.xlsx")
 biometry_2016 <- read("../data/biometry_2016.xlsx")
 ```
 
+![](../figures/mice68.jpg)
+
 
 # Introduction
-Ce projet se portera sur l'évolution de certains critères des populations humaines, dont le genre, la date de naissance, l'année de naissance, poid, taille, tour de taille et l'année de la prise de mesure
+Ce projet se portera sur l'évolution de certains critères des populations humaines, dont le genre, la date de naissance, l'année de naissance, poids, taille, tour de taille et l'année de la prise de mesure
 # But
 le but de ce projet est d'analyser l'évolution de ces populations humaines au cour de 2014 à 2016
 # Matériel et méthodes utilisées
