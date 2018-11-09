@@ -41,7 +41,6 @@ chart( biometry, formula= weight ~ height %col=% gender ) +
 chart( biometry_2016, formula = weight ~ height %col=% gender ) +
   geom_point (na.rm = TRUE)
 ```
-
 # Discussion
 
 # Conclusion
