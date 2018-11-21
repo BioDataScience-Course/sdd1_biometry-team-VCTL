@@ -9,7 +9,7 @@ Travail en groupe par rapport à l'étude de la biométrie d'une population de B
 ##Importation des données et des outils nécessaires
 ```{r}
 SciViews::R
-(biometry <- read$csv("https://docs.google.com/spreadsheets/d/1UfpZvx1_nd7d10vIMAfGVZ1vWyIuzeiKxPL0jfkNSQM/export?format=csv"))
+(biometry <- read_csv("https://docs.google.com/spreadsheets/d/1UfpZvx1_nd7d10vIMAfGVZ1vWyIuzeiKxPL0jfkNSQM/export?format=csv", locale = locale(decimal_mark = ",")))
 
 ```
 
@@ -22,3 +22,4 @@ biometry_summarise <- summarise(biometry1 ,
   "moyenne taille" = mean(taille), 
   "moyenne masse" = mean(masse))
 knitr::kable(biometry_summarise, digits = 2)
+```
