@@ -1,0 +1,36 @@
+---
+title: "stockage"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Importation des données et des outils nécessaires
+```{r}
+SciViews::R
+(biometry <- read$csv("https://docs.google.com/spreadsheets/d/1UfpZvx1_nd7d10vIMAfGVZ1vWyIuzeiKxPL0jfkNSQM/export?format=csv"))
+
+```
+
+# Etudes des données
+### Tableau résumé
+```{r}
+rmarkdown::paged_table(biometry)
+biometry1 <- filter (biometry, taille>0, masse >0 , )
+biometry_summarise <- summarise(biometry1 ,
+  "moyenne taille" = mean(taille), 
+  "moyenne masse" = mean(masse))
+knitr::kable(biometry_summarise, digits = 2)
+```
+
+
+## graphiques: comparaison
+###graphiques en fonction du poids par rapport à la taille
+  
+```{r}
+chart(biometry1, formula = taille ~ masse  ) + geom_point ()
+```
+  
+  
