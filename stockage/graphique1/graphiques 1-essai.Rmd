@@ -110,10 +110,69 @@ p=ggplot(biometry2, aes(x= grignotage, y= IMC , color= sequences, shape= genre))
 ggplotly(p)
 ```
 
+
+
 ```{r}
 p=ggplot(biometry2, aes(x= repas, y= IMC , color= sequences, shape= genre)) + 
     geom_point(size=1, alpha=0.6)
 
 ggplotly(p)
 ```
+
+
+
+#Lucie qui s'amuse et qui casse tout
+
+
+
+```{r}
+p=ggplot(biometry2, aes(x= repas, y= IMC , color= sequences, shape= genre)) + 
+    geom_violin(size=1, alpha=0.6)
+
+ggplotly(p)
+```
+
+
+
+
+
+```{r}
+library(ggridges)
+
+chart(data = biometry2, sequences~ alcool %fill=% sequences) +
+  geom_density_ridges(na.rm=TRUE, show.legend = FALSE)
+```
+
+```{r}
+chart(data = biometry2,~ alcool %fill=% sequences|sequences) + geom_histogram(binwidth= 1, show.legend = FALSE, na.rm = TRUE) 
+```
+
+```{r}
+chart(data = biometry2, IMC ~ age %fill=% sequences)+ coord_flip() + geom_violin(na.rm = TRUE)
+```
+
+```{r}
+chart(data = biometry2, IMC ~ age %col=% sequences)+ coord_flip() + geom_point(na.rm = TRUE)
+```
+
+```{r}
+chart(data = biometry2, IMC ~ acti_physique %fill=% sequences)+ coord_flip() + geom_violin(na.rm = TRUE)
+```
+tout ceci n'a aucun sens !!! 
+
+```{r}
+chart(data = biometry2, IMC ~ fastfood %col=% sequences) + geom_point(na.rm = TRUE) + geom_smooth(method = "loess", se = FALSE)
+```
+
+
+```{r}
+chart(data = biometry2, acti_physique ~ fastfood %col=% sequences) + geom_point(na.rm = TRUE) + geom_smooth(method = "loess", se = FALSE)
+```
+
+```{r}
+chart(data = biometry2, acti_physique ~ acti_profession %fill=% sequences) + geom_boxplot(na.rm = TRUE) 
+```
+
+
+
 
