@@ -72,6 +72,24 @@ H1:la différence des moyennes entre mesures pour les femmes et pour les hommes�
 t.test(data = biometry, masse_corr ~ genre,
   alternative = "two.sided", conf.level = 0.95, var.equal = TRUE)
 ```
+representation graphique des distributions:
+
+```{r}
+# Student's t distribution (density probability) with parameters:
+.mu <- 50; .s <- 5.5; .df <- 20 # .mu, .s (sigma) and .df
+.col <- 1; .add <- FALSE # Plot parameters
+.x <- seq(-4.5*.s+.mu, 4.5*.s+.mu, l = 1000)     # Quantiles
+.d <- function (x) dt((x-.mu)/.s, df = .df)/.s   # Distribution function
+.q <- function (p) qt(p, df = .df) * .s + .mu    # Quantile for lower-tail prob
+.label <- bquote(t(.(.mu), .(.s), .(.df)))       # Parameters
+curve(.d(x), xlim = range(.x), xaxs = "i", n = 1000, col = .col,
+  add = .add, xlab = "Quantiles", ylab = "Probability density") # Curve
+abline(h = 0, col = "gray") # Baseline
+
+```
+
+
+
 ######Analyses 
 
 Prenons une valeur de α de 5% , (α = 0.05).On compare noter valeur de α avec notre valeur de p qui est de: p-value=5.601e-09.
