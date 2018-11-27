@@ -1,0 +1,178 @@
+---
+title: "stockage"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Importation des données et des outils nécessaires
+```{r}
+SciViews::R
+(biometry <- read_csv("https://docs.google.com/spreadsheets/d/1UfpZvx1_nd7d10vIMAfGVZ1vWyIuzeiKxPL0jfkNSQM/export?format=csv", locale = locale(decimal_mark = ",")))
+library(tidyverse)
+library(plotly)
+library(ggplot2)
+library(ggExtra)
+data(mpg, package="ggplot2")
+library(ggridges)
+
+```
+
+# Etudes des données
+### Tableau résumé
+```{r}
+rmarkdown::paged_table(biometry)
+biometry1 <- filter (biometry, taille>0, masse >0 , )
+biometry_summarise <- summarise(biometry1 ,
+  "moyenne taille" = mean(taille), 
+  "moyenne masse" = mean(masse))
+knitr::kable(biometry_summarise, digits = 2)
+```
+
+
+## graphiques: comparaison
+###graphiques en fonction du poids par rapport à la taille
+  
+```{r}
+biometry_IMC <- mutate(biometry, IMC = masse/taille^2)
+biometry2 <- mutate(biometry_IMC, surpoid = IMC >= 25 & IMC < 30, obese = IMC> 30, normal = IMC <25 & IMC >= 18.5 , souspoid = IMC < 18.5)
+
+biometry2 <- gather(biometry2,
+   souspoid, normal, obese, surpoid, key = "sequences", value = "rapport_imc")
+
+biometry2 <- filter (biometry2, rapport_imc != FALSE)
+
+chart(data = biometry2, ~ factor(0) %fill=% sequences) +
+  geom_bar(width = 1) + 
+  coord_polar("y", start = 0) +
+  theme_void() +
+  scale_fill_viridis_d()
+
+
+ 
+
+
+
+```
+  
+```{r}
+p=ggplot(biometry2, aes(x= proteine_animale, y= IMC , color= sequences, shape= genre)) + 
+    geom_point(size=1, alpha=0.6)
+
+ggplotly(p)
+
+
+
+```
+  
+   
+```{r}
+p=ggplot(biometry2, aes(x= alcool, y= IMC , color= sequences, shape= genre)) + 
+    geom_point(size=1, alpha=0.6)
+
+ggplotly(p)
+```
+ 
+```{r}
+p=ggplot(biometry2, aes(x= genre, y= IMC , color= sequences, shape= genre)) + 
+    geom_point(size=1, alpha=0.6)
+
+ggplotly(p)
+```
+
+```{r}
+p=ggplot(biometry2, aes(x= age, y= IMC , color= sequences, shape= genre)) + 
+    geom_point(size=1, alpha=0.6)
+
+ggplotly(p)
+```
+
+```{r}
+p=ggplot(biometry2, aes(x= acti_physique, y= IMC , color= sequences, shape= genre)) + 
+    geom_point(size=1, alpha=0.6)
+
+ggplotly(p)
+```
+
+```{r}
+p=ggplot(biometry2, aes(x= fastfood, y= IMC , color= sequences, shape= genre)) + 
+    geom_point(size=1, alpha=0.6)
+
+ggplotly(p)
+```
+
+```{r}
+p=ggplot(biometry2, aes(x= grignotage, y= IMC , color= sequences, shape= genre)) + 
+    geom_point(size=1, alpha=0.6)
+
+ggplotly(p)
+```
+
+
+
+```{r}
+p=ggplot(biometry2, aes(x= repas, y= IMC , color= sequences, shape= genre)) + 
+    geom_point(size=1, alpha=0.6)
+
+ggplotly(p)
+```
+
+
+
+#Lucie qui s'amuse et qui casse tout
+
+
+
+```{r}
+p=ggplot(biometry2, aes(x= repas, y= IMC , color= sequences, shape= genre)) + 
+    geom_violin(size=1, alpha=0.6)
+
+ggplotly(p)
+```
+
+
+
+
+
+```{r}
+library(ggridges)
+
+chart(data = biometry2, sequences~ alcool %fill=% sequences) +
+  geom_density_ridges(na.rm=TRUE, show.legend = FALSE)
+```
+
+```{r}
+chart(data = biometry2,~ alcool %fill=% sequences|sequences) + geom_histogram(binwidth= 1, show.legend = FALSE, na.rm = TRUE) 
+```
+
+```{r}
+chart(data = biometry2, IMC ~ age %fill=% sequences)+ coord_flip() + geom_violin(na.rm = TRUE)
+```
+
+```{r}
+chart(data = biometry2, IMC ~ age %col=% sequences)+ coord_flip() + geom_point(na.rm = TRUE)
+```
+
+```{r}
+chart(data = biometry2, IMC ~ acti_physique %fill=% sequences)+ coord_flip() + geom_violin(na.rm = TRUE)
+```
+tout ceci n'a aucun sens !!! 
+
+```{r}
+chart(data = biometry2, IMC ~ fastfood %col=% sequences) + geom_point(na.rm = TRUE) + geom_smooth(method = "loess", se = FALSE)
+```
+
+
+```{r}
+chart(data = biometry2, acti_physique ~ fastfood %col=% sequences) + geom_point(na.rm = TRUE) + geom_smooth(method = "loess", se = FALSE)
+```
+
+```{r}
+chart(data = biometry2, acti_physique ~ acti_profession %fill=% sequences) + geom_boxplot(na.rm = TRUE) 
+```
+
+
+
+
