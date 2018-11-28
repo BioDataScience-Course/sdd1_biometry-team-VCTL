@@ -54,8 +54,11 @@ observons ceci tout d'abord par une représentation graphique
 ```{r}
 biometry<-filter(biometry, genre !="NA")
 
+give_n <- function(x)
+  c(y = max(x) * 1.1, label = length(x)) 
+
 chart(data = biometry, masse_corr ~ genre %fill=% genre) +
-  geom_boxplot(na.rm = TRUE) 
+  geom_boxplot(na.rm = TRUE) + stat_summary(fun.data = give_n, geom = "text", hjust = 0.5)
 ```
 
 Sur le graphique, il semble que les hommes (sex == "h") tendent à avoir une masse corrigée plus grande (variable masse-corr) que les femmes (sex == "f"), mais cette différence est-elle significative ou peut-elle être juste liée au hasard de l’échantillonnage ? Pour y répondre, nous devons élaborer un test de student qui va confronter les hypothèses suivantes (en se basant sur les moyennes) :
@@ -68,15 +71,51 @@ H0:la différence des moyennes entre mesures pour les femmes et pour les hommes=
 
 H1:la différence des moyennes entre mesures pour les femmes et pour les hommes≠ 0
 
+
+
+
+
+test de student :
+
 ```{r}
 t.test(data = biometry, masse_corr ~ genre,
   alternative = "two.sided", conf.level = 0.95, var.equal = TRUE)
 ```
+######Analyses 
+
+Prenons une valeur de α de 5% , (α = 0.05).On compare notre valeur de α avec notre valeur de p qui est de: p-value=5.601e-09.
+
+comme p <<<< α on rejette Ho qui se situe dans la zone de rejet.
+
 representation graphique des distributions:
+
+
+```{r}
+biometry<-filter(biometry, genre !="NA",masse_corr !="NA")
+
+biometry %>.%
+group_by(.,genre) %>.%
+summarise(.,"moyenne" = mean(masse_corr),
+"ecart_type" = sd(masse_corr))
+
+
+
+```
+pour les femmes :
+
+```{r}
+.mu <- 65.2120; .s <- 15.18; .mu + .s * qt(0.05
+, df = 248, lower.tail = FALSE)
+
+.mu <- 65.2120; .s <- 15.18; .mu + .s * qt(5.601e-09
+, df = 248, lower.tail = FALSE)
+
+```
+
 
 ```{r}
 # Student's t distribution (density probability) with parameters:
-.mu <- 50; .s <- 5.5; .df <- 20 # .mu, .s (sigma) and .df
+.mu <- 65.2120; .s <- 15.18; .df <- 248 # .mu, .s (sigma) and .df
 .col <- 1; .add <- FALSE # Plot parameters
 .x <- seq(-4.5*.s+.mu, 4.5*.s+.mu, l = 1000)     # Quantiles
 .d <- function (x) dt((x-.mu)/.s, df = .df)/.s   # Distribution function
@@ -85,16 +124,40 @@ representation graphique des distributions:
 curve(.d(x), xlim = range(.x), xaxs = "i", n = 1000, col = .col,
   add = .add, xlab = "Quantiles", ylab = "Probability density") # Curve
 abline(h = 0, col = "gray") # Baseline
+abline(v = 90, col = "red")
+```
+
+le quantile correspondant à l'hypothèse H0 est situé dans la zone de rejet ( a gauche du quantile α(verticale rouge)) on rejette donc l'hypothèse H0.
+
+
+
+
+pour les hommes :
+
+```{r}
+.mu <- 78.3392; .s <- 18.97183; .mu + .s * qt(0.05
+, df = 248, lower.tail = FALSE)
+
+.mu <- 78.3392; .s <- 18.97183; .mu + .s * qt(5.601e-09
+, df = 248, lower.tail = FALSE)
 
 ```
 
+```{r}
+# Student's t distribution (density probability) with parameters:
+.mu <- 78.3392; .s <- 18.97183; .df <- 248 # .mu, .s (sigma) and .df
+.col <- 1; .add <- FALSE # Plot parameters
+.x <- seq(-4.5*.s+.mu, 4.5*.s+.mu, l = 1000)     # Quantiles
+.d <- function (x) dt((x-.mu)/.s, df = .df)/.s   # Distribution function
+.q <- function (p) qt(p, df = .df) * .s + .mu    # Quantile for lower-tail prob
+.label <- bquote(t(.(.mu), .(.s), .(.df)))       # Parameters
+curve(.d(x), xlim = range(.x), xaxs = "i", n = 1000, col = .col,
+  add = .add, xlab = "Quantiles", ylab = "Probability density") # Curve
+abline(h = 0, col = "gray") # Baseline
+abline(v=109.66, col = "red")
+```
 
-
-######Analyses 
-
-Prenons une valeur de α de 5% , (α = 0.05).On compare noter valeur de α avec notre valeur de p qui est de: p-value=5.601e-09.
-
-comme p <<<< α on rejette Ho qui se situe dans la zone de rejet.
+le quantile correspondant à l'hypothèse H0 est situé dans la zone de rejet ( a gauche du quantile α(ligne rouge)) on rejette donc l'hypothèse H0.
 
 ######Discussion
 
