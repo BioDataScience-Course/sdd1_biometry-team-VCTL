@@ -163,6 +163,28 @@ le quantile correspondant à l'hypothèse H0 est situé dans la zone de rejet ( 
 
 On en conclu donc que l hypothèse H1 est correcte et que la moyenne de la masse corrigée dans notre population sera significativement plus importante chez les hommes que chez les femmes.
 
+##On peut maintenant se demander si la taille des personnes est identique dans la population selon le genre ou es ce que l'un des genres est en moyenne plus grand que l autre ?:
+
+
+Dans le test de student nous avons supposé que la distribution de départ était de type normal.Or lorsqu'on a un faible échantillonage on peut douter que la distribution suis bien une loi normale on va donc utiliser un autre test celui de Test de Wilcoxon-Mahn-Withney une version non-paramétrique du test de student.
+
+#####Graphique
+
+```{r}
+biometry<-filter(biometry, genre !="NA")
+
+give_n <- function(x)
+  c(y = max(x) * 1.1, label = length(x)) 
+
+chart(data = biometry, taille ~ genre %fill=% genre) +
+  geom_boxplot(na.rm = TRUE) + stat_summary(fun.data = give_n, geom = "text", hjust = 0.5)
+```
+
+Sur le graphique, il semble que les hommes (sex == "h") tendent à avoir une taille plus grande (variable taille) que les femmes (sex == "f"), mais cette différence est-elle significative ou peut-elle être juste liée au hasard de l’échantillonnage ? Pour y répondre, nous devons élaborer un Test de Wilcoxon-Mahn-Withney qui va confronter les hypothèses suivantes (en se basant sur les moyennes) :
+
+#####Analyses
+
+voici nos 2 hypothèses :
 
 
 # Discussion
