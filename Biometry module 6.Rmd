@@ -45,9 +45,11 @@ knitr::kable(biometry_summarise, digits = 2)
 
 ```
 
+#Test de student
+
 ##Est ce que la masse corrigée des personnes est identique dans la population selon le genre ou es ce que l'un des genres est en moyenne plus lourd que l autre ?:
 
-observons ceci tout d'abord par une représentation graphique
+observons ceci tout d'abord par une représentation graphique pour avoir une idée.
 
 
 #####Graphique
@@ -163,6 +165,8 @@ le quantile correspondant à l'hypothèse H0 est situé dans la zone de rejet ( 
 
 On en conclu donc que l hypothèse H1 est correcte et que la moyenne de la masse corrigée dans notre population sera significativement plus importante chez les hommes que chez les femmes.
 
+#Test de Wilcoxon
+
 ##On peut maintenant se demander si la taille des personnes est identique dans la population selon le genre ou es ce que l'un des genres est en moyenne plus grand que l autre ?:
 
 
@@ -180,16 +184,18 @@ chart(data = biometry, taille ~ genre %fill=% genre) +
   geom_boxplot(na.rm = TRUE) + stat_summary(fun.data = give_n, geom = "text", hjust = 0.5)
 ```
 
-Sur le graphique, il semble que les hommes (sex == "h") tendent à avoir une taille plus grande (variable taille) que les femmes (sex == "f"), mais cette différence est-elle significative ou peut-elle être juste liée au hasard de l’échantillonnage ? Pour y répondre, nous devons élaborer un Test de Wilcoxon-Mahn-Withney qui va confronter les hypothèses suivantes (en se basant sur les moyennes) :
-
 #####Analyses
 
-voici nos 2 hypothèses :
+Sur le graphique, il semble que les hommes (sex == "h") tendent à avoir une taille plus grande (variable taille) que les femmes (sex == "f"), mais cette différence est-elle significative ou peut-elle être juste liée au hasard de l’échantillonnage ? Pour y répondre, nous devons élaborer un Test de Wilcoxon-Mahn-Withney qui va confronter les hypothèses suivantes (en se basant sur les moyennes) :
+
+
+
+voici nos 2 hypothèses 
 
 H0:P(taillef>tailleh)=P(taillef<tailleh)
 H1:P(taillef>tailleh)≠P(taillef<tailleh)
 
-Test de Wilcoxon-Mahn-Withney:
+######Test de Wilcoxon-Mahn-Withney:
 
 
 ```{r}
@@ -199,7 +205,7 @@ wilcox.test(data = biometry, taille ~ genre,
 
 ######Analyses 
 
-Prenons une valeur de α de 5% , (α = 0.05).On compare notre valeur de α avec notre valeur de p qui est de: p-value=5.601e-09.
+Prenons une valeur de α de 5% , (α = 0.05).On compare notre valeur de α avec notre valeur de p qui est de: p-value=.
 
 comme p <<<< α on rejette Ho qui se situe dans la zone de rejet.
 
@@ -217,6 +223,101 @@ summarise(.,"moyenne" = mean(taille),
 
 
 ```
+
+#####Discussion
+
+On en conclu donc que l hypothèse H1 est correcte et que la moyenne de la taille dans notre population sera significativement plus importante chez les hommes que chez les femmes.
+
+representation graphique des distributions:
+
+
+```{r}
+biometry<-filter(biometry, genre !="NA",taille !="NA")
+
+biometry %>.%
+group_by(.,genre) %>.%
+summarise(.,"moyenne" = mean(taille),
+"ecart_type" = sd(taille))
+
+
+
+```
+
+#Analyses des variances et modèle de l'ANOVA/test de Kruskal-Wallis :
+
+imaginons que nous voulons comparer  de leur age (on formera une variable facteur en formant des groupes d'ages(plus de deux)), on ne peut plus utiliser le test de student ou de wilcoxon car un compare plus de deux population ! On va donc utiliser le test de Kruskal-Wallis ou le modèle de l'ANOVA:
+
+```{r}
+## Cutting biometry$age into biometry$age_rec
+biometry$age_rec <- cut(biometry$age, include.lowest=FALSE,  right=TRUE,
+                        breaks=c(0, 20, 50,100))
+
+biometry$age_rec <- as.ordered(biometry$age_rec)
+
+skimr::skim(biometry)
+
+```
+
+Nous pourions comparer chaque groupe l'un avec l'autre c'est long et nous ne le ferons pas car à chaque test nous prenons un risque de nous tromper. Le risque de se tromper au moins une fois dans l’ensemble des tests est alors décuplé en cas de tests multiples.
+
+```{r}
+biometry %>.%
+  group_by(., age_rec) %>.%
+  filter(.,age_rec !="NA",masse_corr !="NA")%>.%
+  summarise(., mean = mean(masse_corr), sd = sd(masse_corr), count = sum(!is.na(masse_corr)))
+```
+
+```{r}
+biometry %>.%
+  group_by(., age_rec) %>.%
+  filter(.,age_rec !="NA")%>.%
+
+chart(data = .,masse_corr ~ age_rec) + # Je réalise un graphique 
+  geom_violin() + # Je réalise un graphique en violon
+  geom_jitter(width = 0.05, alpha = 0.5) + # J'ajoute les points sur le graphique 
+  stat_summary(geom = "point", fun.y = "mean", color = "green", size = 9) # J'ajoute la moyenne en vert
+```
+
+test anova:
+
+on a maintenant prit connaissance de nos données on va se demander si il y a homoscédasticité des variances via un test de Barlett:
+
+dont les hypothèses sont:
+
+H0:var1=var2=...=vark     (homoscédasticité)
+H1:∃(i,j) tel que vari≠varj       (hétéroscédasticité)
+
+```{r}
+
+biometry %>.%
+  group_by(., age_rec) %>.%
+  filter(.,age_rec !="NA",masse_corr!="NA")%>.%
+bartlett.test(data = .,masse_corr ~ age_rec)
+```
+
+ici la p-value est plus petite qu'alpha (0.05) ont rejette donc H0, on a besoin que H0 soit non rejettée pour utiliser le modèle de l'ANOVA sinon on se rabattra sur un test de Kruskal-Wallis:
+
+```{r}
+
+biometry %>.%
+  group_by(., age_rec) %>.%
+  filter(.,age_rec !="NA",masse_corr!="NA")%>.%
+bartlett.test(data = .,log(masse_corr) ~ age_rec)
+```
+
+ici la p-value est suppérieur a alpha(0.05) on peut donc utiliser l'ANOVA avec log(masse-corr)
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Discussion
 
