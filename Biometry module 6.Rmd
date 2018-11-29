@@ -307,15 +307,69 @@ bartlett.test(data = .,log(masse_corr) ~ age_rec)
 
 ici la p-value est suppérieur a alpha(0.05) on peut donc utiliser l'ANOVA avec log(masse-corr)
 
+visualisation:
 
+```{r}
+biometry %>.%
+  group_by(., age_rec) %>.%
+  filter(.,age_rec !="NA",masse_corr !="NA")%>.%
+  summarise(., mean = mean(log(masse_corr)), sd = sd(log(masse_corr)), count = sum(!is.na(log(masse_corr))))
+```
 
+```{r}
+biometry %>.%
+  group_by(., age_rec) %>.%
+  filter(.,age_rec !="NA")%>.%
 
+chart(data = .,log(masse_corr) ~ age_rec) + # Je réalise un graphique 
+  geom_violin() + # Je réalise un graphique en violon
+  geom_jitter(width = 0.05, alpha = 0.5) + # J'ajoute les points sur le graphique 
+  stat_summary(geom = "point", fun.y = "mean", color = "green", size = 9) # J'ajoute la moyenne en vert
+```
 
+avant de continueron dois vérifier si la distibution est bien de type normale pour pouvoir utiliser l'ANOVA :
 
+```{r}
+biometry %>.%
+  group_by(., age_rec) %>.%
+  filter(.,age_rec !="NA")%>.%
 
+car::qqPlot(.[["masse_corr"]], distribution = "norm",
+  envelope = 0.95, col = "green", ylab = "masse_corr")
 
+```
 
+on observe que la distribution sort des marges pour les valeurs plus importante on prèferera donc utiliser le modèle non paramétrique du test de Kruskal-Wallis
 
+#####Test de Kruskal-Wallis
+
+Dans le test de Kruskal-Wallis, sous H0 nous avons le même rang moyen (noté mr) pour chaque groupe parmi k. Sous H1, au moins deux groupes ont des rangs moyens différents:
+
+H0:mr1=mr2=...=mrk
+
+H1:∃(i,j) tel que mri≠mrj
+
+```{r}
+kruskal.test(data = biometry, masse_corr ~ age_rec)
+```
+
+comme p-value est bien plus petit qu'aplha (0.05) on rejette H0 et on peut dire qu'il existe au moins une différence significative entre les ratios .
+
+#####Test post hoc
+
+on a déterminer une différencee significative mais est t'elle présente entre tout les groupes ou seulement entre certain ? on réalise un test post hoc pour le savoir(test de tukey):
+
+```{r}
+summary(kw_comp. <- nparcomp::nparcomp(data = biometry, masse_corr ~ age_rec))
+```
+
+```{r}
+plot(kw_comp.)
+```
+
+Discussion
+
+Ici, toutes les différences sont considérées comme significatives sauf  la comparaison des [20-50]-[50-100] avec une valeur P tout juste non significative de 6.833583e-02 mais à prendre avec des pincettes étant donné sa proximité du seuil.
 
 
 
