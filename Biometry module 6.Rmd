@@ -245,7 +245,7 @@ summarise(.,"moyenne" = mean(taille),
 
 #Analyses des variances et modèle de l'ANOVA/test de Kruskal-Wallis :
 
-imaginons que nous voulons comparer  de leur age (on formera une variable facteur en formant des groupes d'ages(plus de deux)), on ne peut plus utiliser le test de student ou de wilcoxon car un compare plus de deux population ! On va donc utiliser le test de Kruskal-Wallis ou le modèle de l'ANOVA:
+##imaginons que nous voulons comparer  de leur age (on formera une variable facteur en formant des groupes d'ages(plus de deux)), on ne peut plus utiliser le test de student ou de wilcoxon car un compare plus de deux population ! On va donc utiliser le test de Kruskal-Wallis ou le modèle de l'ANOVA:
 
 ```{r}
 ## Cutting biometry$age into biometry$age_rec
@@ -258,7 +258,11 @@ skimr::skim(biometry)
 
 ```
 
+#####Analyses
+
 Nous pourions comparer chaque groupe l'un avec l'autre c'est long et nous ne le ferons pas car à chaque test nous prenons un risque de nous tromper. Le risque de se tromper au moins une fois dans l’ensemble des tests est alors décuplé en cas de tests multiples.
+
+#####Graphiques et visualisations
 
 ```{r}
 biometry %>.%
@@ -277,6 +281,12 @@ chart(data = .,masse_corr ~ age_rec) + # Je réalise un graphique
   geom_jitter(width = 0.05, alpha = 0.5) + # J'ajoute les points sur le graphique 
   stat_summary(geom = "point", fun.y = "mean", color = "green", size = 9) # J'ajoute la moyenne en vert
 ```
+
+#####Analyses
+
+On semble voir une différence entre les différentes classes mais cette différence est t'elle significatice ou npas ? pour le savoir on va réaliser  un test de Kruskal-Wallis ou utiliser le modèle de l'ANOVA:
+
+#####ANOVA ou Kruskal-Wallis ?
 
 test anova:
 
@@ -307,7 +317,7 @@ bartlett.test(data = .,log(masse_corr) ~ age_rec)
 
 ici la p-value est suppérieur a alpha(0.05) on peut donc utiliser l'ANOVA avec log(masse-corr)
 
-visualisation:
+######visualisation:
 
 ```{r}
 biometry %>.%
@@ -327,7 +337,7 @@ chart(data = .,log(masse_corr) ~ age_rec) + # Je réalise un graphique
   stat_summary(geom = "point", fun.y = "mean", color = "green", size = 9) # J'ajoute la moyenne en vert
 ```
 
-avant de continueron dois vérifier si la distibution est bien de type normale pour pouvoir utiliser l'ANOVA :
+avant de continuer on dois vérifier si la distibution est bien de type normale pour pouvoir utiliser l'ANOVA :
 
 ```{r}
 biometry %>.%
@@ -353,6 +363,8 @@ H1:∃(i,j) tel que mri≠mrj
 kruskal.test(data = biometry, masse_corr ~ age_rec)
 ```
 
+#####Analyses
+
 comme p-value est bien plus petit qu'aplha (0.05) on rejette H0 et on peut dire qu'il existe au moins une différence significative entre les ratios .
 
 #####Test post hoc
@@ -367,7 +379,7 @@ summary(kw_comp. <- nparcomp::nparcomp(data = biometry, masse_corr ~ age_rec))
 plot(kw_comp.)
 ```
 
-Discussion
+#####Discussion
 
 Ici, toutes les différences sont considérées comme significatives sauf  la comparaison des [20-50]-[50-100] avec une valeur P tout juste non significative de 6.833583e-02 mais à prendre avec des pincettes étant donné sa proximité du seuil.
 
