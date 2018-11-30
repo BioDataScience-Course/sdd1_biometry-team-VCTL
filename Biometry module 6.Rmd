@@ -77,6 +77,36 @@ chart(data = biometry2, ~ factor(0) %fill=% sequences|hainaut) +
   scale_fill_viridis_d()
 ```
 
+#####Test chi carré
+
+voici nos 2 hypothèses:
+
+H0 :la probabilité d avoir un IMC de valeur normal pour la population habitant  en hainaut est la même que pour la population qui n'habite pas en hainaut
+
+H1 : la probabilité d avoir un IMC de valeur normal pour la population habitant  en hainaut est différente que pour la population qui n'habite pas en hainaut
+
+```{r}
+biometry2 %>.%
+  select(.,IMC ,hainaut ) %>.%
+  spread(.,hainaut,key = "batch", value = "sequences")
+```
+
+
+
+```{r}
+(chi2. <- chisq.test(biometry2)); cat("Expected frequencies:\n"); chi2.[["expected"]]
+```
+
+
+#####Analyses
+
+
+#####Discussion
+
+
+
+
+
 
 #Test de student
 
