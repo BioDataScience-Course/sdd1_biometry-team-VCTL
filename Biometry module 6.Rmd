@@ -45,6 +45,27 @@ knitr::kable(biometry_summarise, digits = 2)
 
 ```
 
+#Test chi carré
+
+##on peut se demander si la valeur de notre IC diffère en fonction de notre appartenance ou non au hainaut.
+
+```{r}
+biometry_IMC <- mutate(biometry, IMC = masse/taille^2)
+biometry2 <- mutate(biometry_IMC, surpoid = IMC >= 25 & IMC < 30, obese = IMC> 30, normal = IMC <25 & IMC >= 18.5 , souspoid = IMC < 18.5)
+
+biometry2$IMC <-as.factor(biometry2$IMC)
+
+skimr::skim(biometry2)
+```
+
+#####Graphiques / visualisation:
+
+
+```{r}
+chart(biometry2,~ IMC %FILL=% hainaut) + geom_bar()
+```
+
+
 #Test de student
 
 ##Est ce que la masse corrigée des personnes est identique dans la population selon le genre ou es ce que l'un des genres est en moyenne plus lourd que l autre ?:
@@ -245,7 +266,7 @@ summarise(.,"moyenne" = mean(taille),
 
 #Analyses des variances et modèle de l'ANOVA/test de Kruskal-Wallis :
 
-##imaginons que nous voulons comparer  de leur age (on formera une variable facteur en formant des groupes d'ages(plus de deux)), on ne peut plus utiliser le test de student ou de wilcoxon car un compare plus de deux population ! On va donc utiliser le test de Kruskal-Wallis ou le modèle de l'ANOVA:
+##imaginons que nous voulons comparer la masse corrigée des individus en fonction de leur age (on formera une variable facteur en formant des groupes d'ages(plus de deux)), on ne peut plus utiliser le test de student ou de wilcoxon car un compare plus de deux population ! On va donc utiliser le test de Kruskal-Wallis ou le modèle de l'ANOVA:
 
 ```{r}
 ## Cutting biometry$age into biometry$age_rec
