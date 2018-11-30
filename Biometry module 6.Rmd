@@ -47,7 +47,7 @@ knitr::kable(biometry_summarise, digits = 2)
 
 #Test chi carré
 
-##on peut se demander si la valeur de notre IC diffère en fonction de notre appartenance ou non au hainaut.
+##on peut se demander si la valeur de notre IMC diffère en fonction de notre appartenance ou non au hainaut.
 
 ```{r}
 biometry_IMC <- mutate(biometry, IMC = masse/taille^2)
@@ -152,7 +152,7 @@ Prenons une valeur de α de 5% , (α = 0.05).On compare notre valeur de α avec 
 
 comme p <<<< α on rejette Ho qui se situe dans la zone de rejet.
 
-representation graphique des distributions:
+######representation graphique des distributions:
 
 
 ```{r}
@@ -306,7 +306,7 @@ summarise(.,"moyenne" = mean(taille),
 
 ```
 
-#Analyses des variances et modèle de l'ANOVA/test de Kruskal-Wallis :
+#Test de Kruskal-Wallis/modèle de l'ANOVA et analyses des variances:
 
 ##imaginons que nous voulons comparer la masse corrigée des individus en fonction de leur age (on formera une variable facteur en formant des groupes d'ages(plus de deux)), on ne peut plus utiliser le test de student ou de wilcoxon car un compare plus de deux population ! On va donc utiliser le test de Kruskal-Wallis ou le modèle de l'ANOVA:
 
