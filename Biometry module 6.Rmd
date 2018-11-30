@@ -51,7 +51,7 @@ knitr::kable(biometry_summarise, digits = 2)
 
 ```{r}
 biometry_IMC <- mutate(biometry, IMC = masse/taille^2)
-biometry2 <- mutate(biometry_IMC, surpoid = IMC >= 25 & IMC < 30, obese = IMC> 30, normal = IMC <25 & IMC >= 18.5 , souspoid = IMC < 18.5)
+biometry2 <- mutate(biometry_IMC, anormal = IMC > 25 & IMC < 18.5 ,normal = IMC <25 & IMC >= 18.5)
 
 biometry2$IMC <-as.factor(biometry2$IMC)
 
@@ -64,17 +64,9 @@ skimr::skim(biometry2)
 ```{r}
 biometry_IMC <- mutate(biometry, IMC = masse/taille^2)
 biometry2 <- mutate(biometry_IMC, surpoid = IMC >= 25 & IMC < 30, obese = IMC> 30, normal = IMC <25 & IMC >= 18.5 , souspoid = IMC < 18.5)
-
 biometry2 <- gather(biometry2,
    souspoid, normal, obese, surpoid, key = "sequences", value = "rapport_imc")
-
-biometry2 <- filter (biometry2, rapport_imc != FALSE)
-
-chart(data = biometry2, ~ factor(0) %fill=% sequences|hainaut) +
-  geom_bar(width = 1) + 
-  coord_polar("y", start = 0) +
-  theme_void() +
-  scale_fill_viridis_d()
+chart(biometry2, ~ hainaut | IMC) + geom_bar()
 ```
 
 #####Test chi carré
