@@ -140,6 +140,9 @@ t.test(data = biometry, masse_corr ~ genre,
 ```
 ######Analyses 
 
+
+
+
 Prenons une valeur de α de 5% , (α = 0.05).On compare notre valeur de α avec notre valeur de p qui est de: p-value=5.601e-09.
 
 comme p <<<< α on rejette Ho qui se situe dans la zone de rejet.
@@ -155,33 +158,36 @@ group_by(.,genre) %>.%
 summarise(.,"moyenne" = mean(masse_corr),
 "ecart_type" = sd(masse_corr))
 
-
+sd(biometry$masse_corr)
 
 ```
-pour les femmes :
 
 ```{r}
-.mu <- 65.2120; .s <- 15.18; .mu + .s * qt(0.05
-, df = 248, lower.tail = FALSE)
+(65.2120 + 78.3392)/2#moyenne des moyennes
+```
 
-.mu <- 65.2120; .s <- 15.18; .mu + .s * qt(5.601e-09
-, df = 248, lower.tail = FALSE)
-
+```{r}
+.mu <-71.7756;.s <-18.3653 ; .mu +.s *qt(0.025, df = 248, lower.tail = FALSE)
+.mu <-71.7756;.s <-18.3653 ; .mu +.s *qt(0.025, df = 248, lower.tail = TRUE)
+.mu <-71.7756;.s <-18.3653 ; .mu +.s *qt(5.601e-09
+, df = 248, lower.tail = TRUE)
 ```
 
 
 ```{r}
 # Student's t distribution (density probability) with parameters:
-.mu <- 65.2120; .s <- 15.18; .df <- 248 # .mu, .s (sigma) and .df
+.mu <- 71.7756; .s <- 15.18; .df <- 248 # .mu, .s (sigma) and .df
 .col <- 1; .add <- FALSE # Plot parameters
 .x <- seq(-4.5*.s+.mu, 4.5*.s+.mu, l = 1000)     # Quantiles
 .d <- function (x) dt((x-.mu)/.s, df = .df)/.s   # Distribution function
 .q <- function (p) qt(p, df = .df) * .s + .mu    # Quantile for lower-tail prob
 .label <- bquote(t(.(.mu), .(.s), .(.df)))       # Parameters
-curve(.d(x), xlim = range(.x), xaxs = "i", n = 1000, col = .col,
-  add = .add, xlab = "Quantiles", ylab = "Probability density") # Curve
+curve(.d(x), xlim = c(-50,150), xaxs = "i", n = 1000, col = .col,
+  add = .add, xlab = "Quantiles", ylab = "Probability density" ) # Curve
 abline(h = 0, col = "gray") # Baseline
-abline(v = 90, col = "red")
+abline(v = 107.94, col = "red")
+abline(v = 35.60, col = "red")
+abline(v = -36.77793, col = "green")
 ```
 
 le quantile correspondant à l'hypothèse H0 est situé dans la zone de rejet ( a gauche du quantile α(verticale rouge)) on rejette donc l'hypothèse H0.
@@ -189,32 +195,7 @@ le quantile correspondant à l'hypothèse H0 est situé dans la zone de rejet ( 
 
 
 
-pour les hommes :
 
-```{r}
-.mu <- 78.3392; .s <- 18.97183; .mu + .s * qt(0.05
-, df = 248, lower.tail = FALSE)
-
-.mu <- 78.3392; .s <- 18.97183; .mu + .s * qt(5.601e-09
-, df = 248, lower.tail = FALSE)
-
-```
-
-```{r}
-# Student's t distribution (density probability) with parameters:
-.mu <- 78.3392; .s <- 18.97183; .df <- 248 # .mu, .s (sigma) and .df
-.col <- 1; .add <- FALSE # Plot parameters
-.x <- seq(-4.5*.s+.mu, 4.5*.s+.mu, l = 1000)     # Quantiles
-.d <- function (x) dt((x-.mu)/.s, df = .df)/.s   # Distribution function
-.q <- function (p) qt(p, df = .df) * .s + .mu    # Quantile for lower-tail prob
-.label <- bquote(t(.(.mu), .(.s), .(.df)))       # Parameters
-curve(.d(x), xlim = range(.x), xaxs = "i", n = 1000, col = .col,
-  add = .add, xlab = "Quantiles", ylab = "Probability density") # Curve
-abline(h = 0, col = "gray") # Baseline
-abline(v=109.66, col = "red")
-```
-
-le quantile correspondant à l'hypothèse H0 est situé dans la zone de rejet ( a gauche du quantile α(ligne rouge)) on rejette donc l'hypothèse H0.
 
 ######Discussion
 
@@ -255,7 +236,7 @@ H1:P(taillef>tailleh)≠P(taillef<tailleh)
 
 ```{r}
 wilcox.test(data = biometry, taille ~ genre,
-  alternative = "greater", conf.level = 0.95)
+  alternative = "less", conf.level = 0.95)
 ```
 
 ######Analyses 
@@ -298,9 +279,9 @@ summarise(.,"moyenne" = mean(taille),
 
 ```
 
-#Test de Kruskal-Wallis/modèle de l'ANOVA et analyses des variances:
+# Test de Kruskal-Wallis/modèle de l'ANOVA:
 
-##imaginons que nous voulons comparer la masse corrigée des individus en fonction de leur age (on formera une variable facteur en formant des groupes d'ages(plus de deux)), on ne peut plus utiliser le test de student ou de wilcoxon car un compare plus de deux population ! On va donc utiliser le test de Kruskal-Wallis ou le modèle de l'ANOVA:
+Imaginons que nous voulons comparer la masse corrigée des individus en fonction de leur age (on formera une variable facteur en formant des groupes d'ages(plus de deux)), on ne peut plus utiliser le test de student ou de wilcoxon car un compare plus de deux population ! On va donc utiliser le test de Kruskal-Wallis ou le modèle de l'ANOVA:
 
 ```{r}
 ## Cutting biometry$age into biometry$age_rec
@@ -309,11 +290,11 @@ biometry$age_rec <- cut(biometry$age, include.lowest=FALSE,  right=TRUE,
 
 biometry$age_rec <- as.ordered(biometry$age_rec)
 
-skimr::skim(biometry)
+#skimr::skim(biometry)
 
 ```
 
-#####Analyses
+##### Analyses
 
 Nous pourions comparer chaque groupe l'un avec l'autre c'est long et nous ne le ferons pas car à chaque test nous prenons un risque de nous tromper. Le risque de se tromper au moins une fois dans l’ensemble des tests est alors décuplé en cas de tests multiples.
 
@@ -330,8 +311,7 @@ biometry %>.%
 biometry %>.%
   group_by(., age_rec) %>.%
   filter(.,age_rec !="NA")%>.%
-
-chart(data = .,masse_corr ~ age_rec) + # Je réalise un graphique 
+  chart(data = .,masse_corr ~ age_rec) + # Je réalise un graphique 
   geom_violin() + # Je réalise un graphique en violon
   geom_jitter(width = 0.05, alpha = 0.5) + # J'ajoute les points sur le graphique 
   stat_summary(geom = "point", fun.y = "mean", color = "green", size = 9) # J'ajoute la moyenne en vert
@@ -395,16 +375,19 @@ chart(data = .,log(masse_corr) ~ age_rec) + # Je réalise un graphique
 avant de continuer on dois vérifier si la distibution est bien de type normale pour pouvoir utiliser l'ANOVA :
 
 ```{r}
-biometry %>.%
-  group_by(., age_rec) %>.%
-  filter(.,age_rec !="NA")%>.%
 
-car::qqPlot(.[["masse_corr"]], distribution = "norm",
-  envelope = 0.95, col = "green", ylab = "masse_corr")
 
+anova(anova. <- lm(data = biometry, masse_corr ~ age_rec))
+
+#plot(anova., which = 2)
+anova. %>.%
+  chart(broom::augment(.), aes(sample = .std.resid)) +
+  geom_qq() +
+  #geom_qq_line(colour = "darkgray") +
+  labs(x = "Theoretical quantiles", y = "Standardized residuals") +
+  ggtitle("Normal Q-Q")
 ```
-
-on observe que la distribution sort des marges pour les valeurs plus importante on prèferera donc utiliser le modèle non paramétrique du test de Kruskal-Wallis
+on observe que la distribution est non normale pour les valeurs plus importante on prèferera donc utiliser le modèle non paramétrique du test de Kruskal-Wallis
 
 #####Test de Kruskal-Wallis
 
