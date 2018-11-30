@@ -48,10 +48,13 @@ knitr::kable(biometry_summarise, digits = 2)
 #Test chi carré
 
 ##on peut se demander si la valeur de notre IMC diffère en fonction de notre appartenance ou non au hainaut.
+```{r}
+?case_when()
+```
 
 ```{r}
 biometry_IMC <- mutate(biometry, IMC = masse/taille^2)
-biometry2 <- mutate(biometry_IMC, anormal = IMC > 25 & IMC < 18.5 ,normal = IMC <25 & IMC >= 18.5)
+biometry2 <- mutate(biometry_IMC, imc_class = case_when("anormal" == IMC > 25 & IMC < 18.5 ,"normal" == IMC < 25 & IMC >= 18.5)
 
 biometry2$IMC <-as.factor(biometry2$IMC)
 
@@ -158,11 +161,12 @@ group_by(.,genre) %>.%
 summarise(.,"moyenne" = mean(masse_corr),
 "ecart_type" = sd(masse_corr))
 
-sd(biometry$masse_corr)
+
 
 ```
 
 ```{r}
+sd(biometry$masse_corr)
 (65.2120 + 78.3392)/2#moyenne des moyennes
 ```
 
@@ -190,7 +194,7 @@ abline(v = 35.60, col = "red")
 abline(v = -36.77793, col = "green")
 ```
 
-le quantile correspondant à l'hypothèse H0 est situé dans la zone de rejet ( a gauche du quantile α(verticale rouge)) on rejette donc l'hypothèse H0.
+le quantile correspondant à l'hypothèse H0 (ligne verte)est situé dans la zone de rejet ( a gauche du quantile α(verticale rouge)) on rejette donc l'hypothèse H0.
 
 
 
@@ -222,11 +226,11 @@ chart(data = biometry, taille ~ genre %fill=% genre) +
 
 #####Analyses
 
-Sur le graphique, il semble que les hommes (sex == "h") tendent à avoir une taille plus grande (variable taille) que les femmes (sex == "f"), mais cette différence est-elle significative ou peut-elle être juste liée au hasard de l’échantillonnage ? Pour y répondre, nous devons élaborer un Test de Wilcoxon-Mahn-Withney qui va confronter les hypothèses suivantes (en se basant sur les moyennes) :
+Sur le graphique, il semble que les hommes (sex == "h") tendent à avoir une taille plus grande (variable taille) que les femmes (sex == "f"), mais cette différence est-elle significative ou peut-elle être juste liée au hasard de l’échantillonnage ? Pour y répondre, nous devons élaborer un Test de Wilcoxon-Mahn-Withney qui va confronter les hypothèses suivantes (en se basant sur les médianes) :
 
 
 
-voici nos 2 hypothèses 
+voici nos 2 hypothèses:
 
 H0:P(taillef>tailleh)=P(taillef<tailleh)
 H1:P(taillef>tailleh)≠P(taillef<tailleh)
@@ -241,43 +245,16 @@ wilcox.test(data = biometry, taille ~ genre,
 
 ######Analyses 
 
-Prenons une valeur de α de 5% , (α = 0.05).On compare notre valeur de α avec notre valeur de p qui est de: p-value=.
+Prenons une valeur de α de 5% , (α = 0.05).On compare notre valeur de α avec notre valeur de p qui est de: p-value=2.2e-16.
 
 comme p <<<< α on rejette Ho qui se situe dans la zone de rejet.
 
-representation graphique des distributions:
-
-
-```{r}
-biometry<-filter(biometry, genre !="NA",taille !="NA")
-
-biometry %>.%
-group_by(.,genre) %>.%
-summarise(.,"moyenne" = mean(taille),
-"ecart_type" = sd(taille))
-
-
-
-```
 
 #####Discussion
 
 On en conclu donc que l hypothèse H1 est correcte et que la moyenne de la taille dans notre population sera significativement plus importante chez les hommes que chez les femmes.
 
-representation graphique des distributions:
 
-
-```{r}
-biometry<-filter(biometry, genre !="NA",taille !="NA")
-
-biometry %>.%
-group_by(.,genre) %>.%
-summarise(.,"moyenne" = mean(taille),
-"ecart_type" = sd(taille))
-
-
-
-```
 
 # Test de Kruskal-Wallis/modèle de l'ANOVA:
 
@@ -314,7 +291,7 @@ biometry %>.%
   chart(data = .,masse_corr ~ age_rec) + # Je réalise un graphique 
   geom_violin() + # Je réalise un graphique en violon
   geom_jitter(width = 0.05, alpha = 0.5) + # J'ajoute les points sur le graphique 
-  stat_summary(geom = "point", fun.y = "mean", color = "green", size = 9) # J'ajoute la moyenne en vert
+  stat_summary(geom = "point", fun.y = "mean", color = "green", size = 4) # J'ajoute la moyenne en vert
 ```
 
 #####Analyses
@@ -369,7 +346,7 @@ biometry %>.%
 chart(data = .,log(masse_corr) ~ age_rec) + # Je réalise un graphique 
   geom_violin() + # Je réalise un graphique en violon
   geom_jitter(width = 0.05, alpha = 0.5) + # J'ajoute les points sur le graphique 
-  stat_summary(geom = "point", fun.y = "mean", color = "green", size = 9) # J'ajoute la moyenne en vert
+  stat_summary(geom = "point", fun.y = "mean", color = "green", size = 4) # J'ajoute la moyenne en vert
 ```
 
 avant de continuer on dois vérifier si la distibution est bien de type normale pour pouvoir utiliser l'ANOVA :
