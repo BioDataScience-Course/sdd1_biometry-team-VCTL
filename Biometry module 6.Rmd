@@ -171,27 +171,27 @@ sd(biometry$masse_corr)
 ```
 
 ```{r}
-.mu <-71.7756;.s <-18.3653 ; .mu +.s *qt(0.025, df = 248, lower.tail = FALSE)
-.mu <-71.7756;.s <-18.3653 ; .mu +.s *qt(0.025, df = 248, lower.tail = TRUE)
-.mu <-71.7756;.s <-18.3653 ; .mu +.s *qt(5.601e-09
+.mu <-0;.s <-1 ; .mu +.s *qt(0.025, df = 248, lower.tail = FALSE)
+.mu <-0;.s <-1 ; .mu +.s *qt(0.025, df = 248, lower.tail = TRUE)
+.mu <-0;.s <-1 ; .mu +.s *qt(5.601e-09
 , df = 248, lower.tail = TRUE)
 ```
 
 
 ```{r}
 # Student's t distribution (density probability) with parameters:
-.mu <- 71.7756; .s <- 15.18; .df <- 248 # .mu, .s (sigma) and .df
+.mu <- 0; .s <- 1; .df <- 248 # .mu, .s (sigma) and .df
 .col <- 1; .add <- FALSE # Plot parameters
 .x <- seq(-4.5*.s+.mu, 4.5*.s+.mu, l = 1000)     # Quantiles
 .d <- function (x) dt((x-.mu)/.s, df = .df)/.s   # Distribution function
 .q <- function (p) qt(p, df = .df) * .s + .mu    # Quantile for lower-tail prob
 .label <- bquote(t(.(.mu), .(.s), .(.df)))       # Parameters
-curve(.d(x), xlim = c(-50,150), xaxs = "i", n = 1000, col = .col,
+curve(.d(x), xlim = c(-10,7), xaxs = "i", n = 1000, col = .col,
   add = .add, xlab = "Quantiles", ylab = "Probability density" ) # Curve
 abline(h = 0, col = "gray") # Baseline
-abline(v = 107.94, col = "red")
-abline(v = 35.60, col = "red")
-abline(v = -36.77793, col = "green")
+abline(v = -1.96, col = "red")
+abline(v = 1.96, col = "red")
+abline(v = -5.91, col = "green")
 ```
 
 le quantile correspondant à l'hypothèse H0 (ligne verte)est situé dans la zone de rejet ( a gauche du quantile α(verticale rouge)) on rejette donc l'hypothèse H0.
