@@ -137,67 +137,39 @@ $(document).ready(function () {
 <div id="alcool" class="section level2">
 <h2>Alcool</h2>
 <pre class="r"><code>biometry_alcoolA &lt;-  filter (biometry2,sequences == &quot;souspoid&quot;  )
-biometry_summaryA &lt;- summarise (biometry_alcoolA, &quot;moyenne de consommation d'alcool pour les personnes en souspoid&quot; = mean(alcool))
-knitr::kable(biometry_summaryA, digits = 2)</code></pre>
+biometry_alcoolA &lt;- summarise (biometry_alcoolA, &quot; souspoid&quot; = mean(alcool))
+
+biometry_alcoolB &lt;-  filter (biometry2,sequences == &quot;obese&quot;  )
+biometry_alcoolB &lt;- filter (biometry_alcoolB, alcool != &quot;NA&quot;)
+
+biometry_alcoolB &lt;- summarise (biometry_alcoolB, &quot; obèses&quot; = mean(alcool))
+
+biometry_alcoolC &lt;-  filter (biometry2,sequences == &quot;surpoid&quot;  )
+biometry_alcoolC &lt;- filter (biometry_alcoolC, alcool != &quot;NA&quot;)
+biometry_alcoolC &lt;- summarise (biometry_alcoolC, &quot;surpoid&quot; = mean(alcool))
+
+biometry_alcoolD &lt;-  filter (biometry2,sequences == &quot;normal&quot;  )
+biometry_alcoolD &lt;- filter (biometry_alcoolD, alcool != &quot;NA&quot;)
+
+biometry_alcoolD &lt;- summarise (biometry_alcoolD, &quot;normaux&quot; = mean(alcool))
+
+biometry_alcool &lt;- bind_cols( biometry_alcoolA, biometry_alcoolD, biometry_alcoolC, biometry_alcoolB)
+knitr::kable(biometry_alcool, digits = 2)</code></pre>
 <table>
 <thead>
 <tr class="header">
-<th align="right">moyenne de consommation d’alcool pour les personnes en souspoid</th>
+<th align="right">souspoid</th>
+<th align="right">normaux</th>
+<th align="right">surpoid</th>
+<th align="right">obèses</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="right">0.84</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>biometry_alcoolB &lt;-  filter (biometry2,sequences == &quot;obese&quot;  )
-biometry_alcoolB &lt;- filter (biometry_alcoolB, alcool != &quot;NA&quot;)
-
-biometry_summaryB &lt;- summarise (biometry_alcoolB, &quot;moyenne de consommation d'alcool pour les personnes obèses&quot; = mean(alcool))
-knitr::kable(biometry_summaryB, digits = 2)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="right">moyenne de consommation d’alcool pour les personnes obèses</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="right">4.1</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>biometry_alcoolC &lt;-  filter (biometry2,sequences == &quot;surpoid&quot;  )
-biometry_alcoolC &lt;- filter (biometry_alcoolC, alcool != &quot;NA&quot;)
-biometry_summaryC &lt;- summarise (biometry_alcoolC, &quot;moyenne de consommation d'alcool pour les personnes en surpoid&quot; = mean(alcool))
-knitr::kable(biometry_summaryC, digits = 2)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="right">moyenne de consommation d’alcool pour les personnes en surpoid</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="right">6.19</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>biometry_alcoolD &lt;-  filter (biometry2,sequences == &quot;normal&quot;  )
-biometry_alcoolD &lt;- filter (biometry_alcoolD, alcool != &quot;NA&quot;)
-
-biometry_summaryD &lt;- summarise (biometry_alcoolD, &quot;moyenne de consommation d'alcool pour les personnes normales&quot; = mean(alcool))
-knitr::kable(biometry_summaryD, digits = 2)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="right">moyenne de consommation d’alcool pour les personnes normales</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
 <td align="right">3.33</td>
+<td align="right">6.19</td>
+<td align="right">4.1</td>
 </tr>
 </tbody>
 </table>
@@ -206,66 +178,38 @@ knitr::kable(biometry_summaryD, digits = 2)</code></pre>
 <h2>fastfood</h2>
 <pre class="r"><code>biometry_fastfoodA &lt;-  filter (biometry2,sequences == &quot;souspoid&quot;  )
 biometry_fasfoodA &lt;- filter (biometry_fastfoodA, fastfood != &quot;NA&quot;)
-biometry_summaryA2 &lt;- summarise (biometry_fastfoodA, &quot;moyenne de consommation de fastfood pour les personnes en souspoid&quot; = mean(fastfood))
-knitr::kable(biometry_summaryA2, digits = 2)</code></pre>
+biometry_fastfoodA &lt;- summarise (biometry_fastfoodA, &quot;souspoid&quot; = mean(fastfood))
+
+biometry_fastfoodB &lt;-  filter (biometry2, sequences == &quot;obese&quot;  )
+biometry_fastfoodB &lt;- filter (biometry_fastfoodB, fastfood != &quot;NA&quot;)
+biometry_fastfoodB &lt;- summarise (biometry_fastfoodB, &quot;obèses&quot; = mean(fastfood))
+
+biometry_fastfoodC &lt;-  filter (biometry2,sequences == &quot;surpoid&quot;  )
+biometry_fastfoodC &lt;- filter (biometry_fastfoodC, fastfood != &quot;NA&quot;)
+biometry_fastfoodC &lt;- summarise (biometry_fastfoodC, &quot;surpoid&quot; = mean(fastfood))
+
+biometry_fastfoodD &lt;-  filter (biometry2,sequences == &quot;normal&quot;  )
+biometry_fastfoodD &lt;- filter (biometry_fastfoodD, fastfood != &quot;NA&quot;)
+biometry_fastfoodD &lt;- summarise (biometry_fastfoodD, &quot;normales&quot; = mean(fastfood))
+
+biometry_fastfood &lt;- bind_cols( biometry_fastfoodA, biometry_fastfoodD, biometry_fastfoodC, biometry_fastfoodB)
+
+knitr::kable(biometry_fastfood, digits = 2)</code></pre>
 <table>
 <thead>
 <tr class="header">
-<th align="right">moyenne de consommation de fastfood pour les personnes en souspoid</th>
+<th align="right">souspoid</th>
+<th align="right">normales</th>
+<th align="right">surpoid</th>
+<th align="right">obèses</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="right">0.5</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>biometry_fastfoodB &lt;-  filter (biometry2, sequences == &quot;obese&quot;  )
-biometry_fastfoodB &lt;- filter (biometry_fastfoodB, fastfood != &quot;NA&quot;)
-biometry_summaryB2 &lt;- summarise (biometry_fastfoodB, &quot;moyenne de consommation de fastfood pour les personnes obèses&quot; = mean(fastfood))
-knitr::kable(biometry_summaryB2, digits = 2)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="right">moyenne de consommation de fastfood pour les personnes obèses</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="right">0.66</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>biometry_fastfoodC &lt;-  filter (biometry2,sequences == &quot;surpoid&quot;  )
-biometry_fastfoodC &lt;- filter (biometry_fastfoodC, fastfood != &quot;NA&quot;)
-biometry_summaryC2 &lt;- summarise (biometry_fastfoodC, &quot;moyenne de consommation de fastfood pour les personnes en surpoid&quot; = mean(fastfood))
-knitr::kable(biometry_summaryC2, digits = 2)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="right">moyenne de consommation de fastfood pour les personnes en surpoid</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="right">0.56</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>biometry_fastfoodD &lt;-  filter (biometry2,sequences == &quot;normal&quot;  )
-biometry_fastfoodD &lt;- filter (biometry_fastfoodD, fastfood != &quot;NA&quot;)
-
-biometry_summaryD2 &lt;- summarise (biometry_fastfoodD, &quot;moyenne de consommation de fastfood pour les personnes normales&quot; = mean(fastfood))
-knitr::kable(biometry_summaryD2, digits = 2)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="right">moyenne de consommation de fastfood pour les personnes normales</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
 <td align="right">0.7</td>
+<td align="right">0.56</td>
+<td align="right">0.66</td>
 </tr>
 </tbody>
 </table>
@@ -274,65 +218,39 @@ knitr::kable(biometry_summaryD2, digits = 2)</code></pre>
 <h2>grignotage</h2>
 <pre class="r"><code>biometry_grignotageA &lt;-  filter (biometry2,sequences == &quot;souspoid&quot;  )
 biometry_grignotageA &lt;- filter (biometry_grignotageA, grignotage != &quot;NA&quot;)
-biometry_summaryA3 &lt;- summarise (biometry_grignotageA, &quot;moyenne de consommation de grignotage pour les personnes en souspoid&quot; = mean(grignotage))
-knitr::kable(biometry_summaryA3, digits = 2)</code></pre>
+biometry_grignotageA &lt;- summarise (biometry_grignotageA, &quot; souspoid&quot; = mean(grignotage))
+
+biometry_grignotageB &lt;-  filter (biometry2,sequences == &quot;obese&quot;  )
+biometry_grignotageB &lt;- filter (biometry_grignotageB, grignotage != &quot;NA&quot;)
+biometry_grignotageB &lt;- summarise (biometry_grignotageB, &quot; obèses&quot; = mean(grignotage))
+
+biometry_grignotageC &lt;-  filter (biometry2,sequences == &quot;surpoid&quot;  )
+biometry_grignotageC &lt;- filter (biometry_grignotageC, grignotage != &quot;NA&quot;)
+biometry_grignotageC &lt;- summarise (biometry_grignotageC, &quot; surpoid&quot; = mean(grignotage))
+
+biometry_grignotageD &lt;-  filter (biometry2,sequences == &quot;normal&quot;  )
+biometry_grignotageD &lt;- filter (biometry_grignotageD, grignotage != &quot;NA&quot;)
+biometry_grignotageD &lt;- summarise (biometry_grignotageD, &quot;normales&quot; = mean(grignotage))
+
+biometry_grignotage &lt;- bind_cols( biometry_grignotageA, biometry_grignotageD, biometry_grignotageC, biometry_grignotageB)
+
+
+knitr::kable(biometry_grignotage, digits = 2)</code></pre>
 <table>
 <thead>
 <tr class="header">
-<th align="right">moyenne de consommation de grignotage pour les personnes en souspoid</th>
+<th align="right">souspoid</th>
+<th align="right">normales</th>
+<th align="right">surpoid</th>
+<th align="right">obèses</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="right">2.41</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>biometry_grignotageB &lt;-  filter (biometry2,sequences == &quot;obese&quot;  )
-biometry_grignotageB &lt;- filter (biometry_grignotageB, grignotage != &quot;NA&quot;)
-biometry_summaryB3 &lt;- summarise (biometry_grignotageB, &quot;moyenne de consommation de grignotage pour les personnes obèses&quot; = mean(grignotage))
-knitr::kable(biometry_summaryB3, digits = 2)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="right">moyenne de consommation de grignotage pour les personnes obèses</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="right">2.19</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>biometry_grignotageC &lt;-  filter (biometry2,sequences == &quot;surpoid&quot;  )
-biometry_grignotageC &lt;- filter (biometry_grignotageC, grignotage != &quot;NA&quot;)
-biometry_summaryC3 &lt;- summarise (biometry_grignotageC, &quot;moyenne de consommation de grignotage pour les personnes en surpoid&quot; = mean(grignotage))
-knitr::kable(biometry_summaryC3, digits = 2)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="right">moyenne de consommation de grignotage pour les personnes en surpoid</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="right">1.94</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>biometry_grignotageD &lt;-  filter (biometry2,sequences == &quot;normal&quot;  )
-biometry_grignotageD &lt;- filter (biometry_grignotageD, grignotage != &quot;NA&quot;)
-biometry_summaryD3 &lt;- summarise (biometry_grignotageD, &quot;moyenne de consommation de grignotage pour les personnes normales&quot; = mean(grignotage))
-knitr::kable(biometry_summaryD3, digits = 2)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="right">moyenne de consommation de grignotage pour les personnes normales</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
 <td align="right">2.28</td>
+<td align="right">1.94</td>
+<td align="right">2.19</td>
 </tr>
 </tbody>
 </table>
@@ -341,71 +259,38 @@ knitr::kable(biometry_summaryD3, digits = 2)</code></pre>
 <h2>proteine_animale</h2>
 <pre class="r"><code>biometry_PA &lt;-  filter (biometry2,sequences == &quot;souspoid&quot;  )
 biometry_PA &lt;- filter (biometry_PA, proteine_animale != &quot;NA&quot;)
-biometry_summaryA4 &lt;- summarise (biometry_PA, &quot;moyenne de consommation de proteine animale pour les personnes en souspoid&quot; = mean(proteine_animale))
-knitr::kable(biometry_summaryA4, digits = 2)</code></pre>
+biometry_PA &lt;- summarise (biometry_PA, &quot;souspoid&quot; = mean(proteine_animale))
+
+biometry_PB &lt;-  filter (biometry2,sequences == &quot;obese&quot;  )
+biometry_PB &lt;- filter (biometry_PB, proteine_animale != &quot;NA&quot;)
+biometry_PB &lt;- summarise (biometry_PB, &quot;obèses&quot; = mean(proteine_animale))
+
+biometry_PC &lt;-  filter (biometry2,sequences == &quot;surpoid&quot;  )
+biometry_PC &lt;- filter (biometry_PC, proteine_animale != &quot;NA&quot;)
+biometry_PC &lt;- summarise (biometry_PC, &quot;surpoid&quot; = mean(proteine_animale))
+
+biometry_PD &lt;-  filter (biometry2,sequences == &quot;normal&quot;  )
+biometry_PD &lt;- filter (biometry_PD, proteine_animale != &quot;NA&quot;)
+biometry_PD &lt;- summarise (biometry_PD, &quot;normales&quot; = mean(proteine_animale))
+
+biometry_P &lt;- bind_cols( biometry_PA, biometry_PD, biometry_PC, biometry_PB)
+
+knitr::kable(biometry_P, digits = 2)</code></pre>
 <table>
-<colgroup>
-<col width="100%"></col>
-</colgroup>
 <thead>
 <tr class="header">
-<th align="right">moyenne de consommation de proteine animale pour les personnes en souspoid</th>
+<th align="right">souspoid</th>
+<th align="right">normales</th>
+<th align="right">surpoid</th>
+<th align="right">obèses</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="right">5.87</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>biometry_PB &lt;-  filter (biometry2,sequences == &quot;obese&quot;  )
-biometry_PB &lt;- filter (biometry_PB, proteine_animale != &quot;NA&quot;)
-biometry_summaryB4 &lt;- summarise (biometry_PB, &quot;moyenne de consommation de proteine animale pour les personnes obèses&quot; = mean(proteine_animale))
-knitr::kable(biometry_summaryB4, digits = 2)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="right">moyenne de consommation de proteine animale pour les personnes obèses</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="right">7.04</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>biometry_PC &lt;-  filter (biometry2,sequences == &quot;surpoid&quot;  )
-biometry_PC &lt;- filter (biometry_PC, proteine_animale != &quot;NA&quot;)
-biometry_summaryC4 &lt;- summarise (biometry_PC, &quot;moyenne de consommation de proteine animale pour les personnes en surpoid&quot; = mean(proteine_animale))
-knitr::kable(biometry_summaryC4, digits = 2)</code></pre>
-<table>
-<colgroup>
-<col width="100%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th align="right">moyenne de consommation de proteine animale pour les personnes en surpoid</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="right">6.75</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>biometry_PD &lt;-  filter (biometry2,sequences == &quot;normal&quot;  )
-biometry_PD &lt;- filter (biometry_PD, proteine_animale != &quot;NA&quot;)
-biometry_summaryD4 &lt;- summarise (biometry_PD, &quot;moyenne de consommation de proteine animale pour les personnes normales&quot; = mean(proteine_animale))
-knitr::kable(biometry_summaryD4, digits = 2)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="right">moyenne de consommation de proteine animale pour les personnes normales</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
 <td align="right">6.83</td>
+<td align="right">6.75</td>
+<td align="right">7.04</td>
 </tr>
 </tbody>
 </table>
