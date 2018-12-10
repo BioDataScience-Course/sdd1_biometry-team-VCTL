@@ -1,0 +1,165 @@
+ ---
+title: "graphiques-2-essai"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+SciViews::R
+(biometry <- read_csv("https://docs.google.com/spreadsheets/d/1UfpZvx1_nd7d10vIMAfGVZ1vWyIuzeiKxPL0jfkNSQM/export?format=csv", locale = locale(decimal_mark = ",")))
+library(tidyverse)
+library(plotly)
+library(ggplot2)
+library(ggExtra)
+data(mpg, package="ggplot2")
+library(ggridges)
+
+biometry_IMC <- mutate(biometry, IMC = masse/taille^2)
+biometry2 <- mutate(biometry_IMC, surpoid = IMC >= 25 & IMC < 30, obese = IMC> 30, normal = IMC <25 & IMC >= 18.5 , souspoid = IMC < 18.5)
+
+biometry2 <- gather(biometry2,
+   souspoid, normal, obese, surpoid, key = "sequences", value = "rapport_imc")
+
+biometry2 <- filter (biometry2, rapport_imc != FALSE)
+```
+
+## mise en place
+### Causes déterminantes probables (en théorie) de surpoid ou d'obésité
+alcool
+fastfood
+grignotage
+proteine_animale
+### facteurs séparant plusieurs domaines
+genre
+age
+### causes qui pourrait déterminer des souspoids ou normaux (ou autres)
+acti_profession (facteur)
+acti_physique 
+
+## graphiques par rapoport aux facteurs principaux qui pourrait provoquer une augmentation de IMC
+### Graphiques en fonction de la consommation d'alcool
+```{r}
+nbins <- 25
+chart(data = biometry2, ~ alcool %fill=% sequences | sequences) +
+  geom_histogram(data = select(biometry2, -sequences), fill = "grey", bins = nbins) + 
+  geom_histogram(show.legend = FALSE, bins = nbins, na.rm = FALSE) +
+  ylab("Effectifs") +
+  scale_fill_viridis_d()
+chart(data = biometry2, alcool ~ sequences %fill=% sequences) + geom_boxplot(show.legend = FALSE)
+
+```
+
+### Graphiques en fonction de la consommation de fastfood
+```{r}
+nbins <- 25
+chart(data = biometry2, ~ fastfood %fill=% sequences | sequences) +
+  geom_histogram(data = select(biometry2, -sequences), fill = "grey", bins = nbins) + 
+  geom_histogram(show.legend = FALSE, bins = nbins, na.rm = FALSE) +
+  ylab("Effectifs") +
+  scale_fill_viridis_d()
+
+chart(data = biometry2, fastfood ~ sequences %fill=% sequences) + geom_boxplot(show.legend = FALSE)
+
+```
+
+### graphiques en fonction du grignotage
+```{r}
+nbins <- 25
+chart(data = biometry2, ~ grignotage %fill=% sequences | sequences) +
+  geom_histogram(data = select(biometry2, -sequences), fill = "grey", bins = nbins) + 
+  geom_histogram(show.legend = FALSE, bins = nbins, na.rm = FALSE) +
+  ylab("Effectifs") +
+  scale_fill_viridis_d()
+
+chart(data = biometry2, grignotage ~ sequences %fill=% sequences) + geom_boxplot(show.legend = FALSE)
+
+
+```
+
+### Graphique en fonction de la consommation de proteine animale
+```{r}
+nbins <- 25
+chart(data = biometry2, ~ proteine_animale %fill=% sequences | sequences) +
+  geom_histogram(data = select(biometry2, -sequences), fill = "grey", bins = nbins) + 
+  geom_histogram(show.legend = FALSE, bins = nbins, na.rm = FALSE) +
+  ylab("Effectifs") +
+  scale_fill_viridis_d()
+
+chart(data = biometry2, proteine_animale ~ sequences %fill=% sequences) + geom_boxplot(show.legend = FALSE)
+
+
+```
+
+##Graphiques par rapport à différents caractères
+### Graphiques par rapport au genre
+```{r}
+chart(data= biometry2, ~ genre %fill=% sequences) + geom_bar()
+```
+
+### Graphiques par rapport au genre
+```{r}
+biometryAGE <- mutate(biometry2, old = age >= 40, young = age < 18, adult = age >= 18 & age <40)
+
+biometryAGE <- gather(biometryAGE, old, young, adult, key = "Age_domaine", value = "Age_rapport")
+
+biometryAGE <- filter (biometryAGE, Age_rapport != FALSE)
+
+
+chart(data = biometryAGE, ~ Age_domaine %fill=% sequences) + geom_bar()
+
+```
+
+## Graphiques par rapport à des critèrse qui pourraient diminuer l'IMC
+### graphique par rapport à l'activité de la profession
+```{r}
+chart(data = biometry2, ~ acti_profession %fill=% sequences) + geom_bar()
+
+```
+
+### graphiques en fonction de l'activité physique 
+```{r}
+nbins <- 25
+chart(data = biometry2, ~ acti_physique %fill=% sequences | sequences) +
+  geom_histogram(data = select(biometry2, -sequences), fill = "grey", bins = nbins) + 
+  geom_histogram(show.legend = FALSE, bins = nbins, na.rm = FALSE) +
+  ylab("Effectifs") +
+  scale_fill_viridis_d()
+
+chart(data = biometry2, acti_physique ~ sequences %fill=% sequences) + geom_boxplot(show.legend = FALSE)
+
+```
+
+
+### graphique comparant l'imc et les 4 causes pouvant augmenter le poids ( alcool, grignotage, fastfood, protéine animal )
+
+```{r}
+a <- chart(data = biometry2, ~ alcool %fill=%sequences) + 
+  geom_histogram(bins= 50) 
+
+b <- chart(data = biometry2, ~ fastfood %fill=%sequences) + 
+  geom_histogram(bins= 50)  
+
+c <- chart(data = biometry2, ~ grignotage %fill=%sequences) + 
+  geom_histogram(bins= 50)  
+
+d <- chart(data = biometry2, ~ proteine_animale %fill=%sequences) + 
+  geom_histogram(bins= 50)  
+
+combine_charts(list(a, b, c, d))
+```
+
+```{r}
+a <- chart(data = biometry2, IMC ~ alcool %fill=%sequences) + 
+  geom_violin () 
+
+b <- chart(data = biometry2, IMC ~ fastfood %fill=%sequences) + 
+  geom_violin()  
+
+c <- chart(data = biometry2, IMC ~ grignotage %fill=%sequences) + 
+  geom_violin()  
+
+d <- chart(data = biometry2, IMC ~ proteine_animale %fill=%sequences) + 
+  geom_violin()  
+
+combine_charts(list(a, b, c, d))
+```
+

@@ -1,0 +1,283 @@
+<<<<<<< HEAD
+---
+title: "graphique_en_fonction_des_causes"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+SciViews::R
+(biometry <- read_csv("https://docs.google.com/spreadsheets/d/1UfpZvx1_nd7d10vIMAfGVZ1vWyIuzeiKxPL0jfkNSQM/export?format=csv", locale = locale(decimal_mark = ",")))
+library(tidyverse)
+library(plotly)
+library(ggplot2)
+library(ggExtra)
+data(mpg, package="ggplot2")
+library(ggridges)
+
+biometry_IMC <- mutate(biometry, IMC = masse/taille^2)
+biometry2 <- mutate(biometry_IMC, surpoid = IMC >= 25 & IMC < 30, obese = IMC> 30, normal = IMC <25 & IMC >= 18.5 , souspoid = IMC < 18.5)
+
+biometry2 <- gather(biometry2,
+   souspoid, normal, obese, surpoid, key = "sequences", value = "rapport_imc")
+
+biometry2 <- filter (biometry2, rapport_imc != FALSE)
+
+chart(data = biometry2, ~ factor(0) %fill=% sequences) +
+  geom_bar(width = 1) + 
+  coord_polar("y", start = 0) +
+  theme_void() +
+  scale_fill_viridis_d()
+
+```
+## mise en place
+### Causes déterminantes probables (en théorie) de surpoid ou d'obésité
+alcool
+fastfood
+grignotage
+proteine_animale
+### facteurs séparant plusieurs domaines
+genre
+age
+### causes qui pourrait déterminer des souspoids ou normaux (ou autres)
+acti_profession (facteur)
+acti_physique 
+
+#Graphiques
+## Alcool
+```{r}
+biometry_alcoolA <-  filter (biometry2,sequences == "souspoid"  )
+biometry_alcoolA <- summarise (biometry_alcoolA, " souspoid" = mean(alcool))
+
+biometry_alcoolB <-  filter (biometry2,sequences == "obese"  )
+biometry_alcoolB <- filter (biometry_alcoolB, alcool != "NA")
+
+biometry_alcoolB <- summarise (biometry_alcoolB, " obèses" = mean(alcool))
+
+biometry_alcoolC <-  filter (biometry2,sequences == "surpoid"  )
+biometry_alcoolC <- filter (biometry_alcoolC, alcool != "NA")
+biometry_alcoolC <- summarise (biometry_alcoolC, "surpoid" = mean(alcool))
+
+biometry_alcoolD <-  filter (biometry2,sequences == "normal"  )
+biometry_alcoolD <- filter (biometry_alcoolD, alcool != "NA")
+
+biometry_alcoolD <- summarise (biometry_alcoolD, "normaux" = mean(alcool))
+
+biometry_alcool <- bind_cols( biometry_alcoolA, biometry_alcoolD, biometry_alcoolC, biometry_alcoolB)
+knitr::kable(biometry_alcool, digits = 2)
+
+```
+
+## fastfood
+```{r}
+biometry_fastfoodA <-  filter (biometry2,sequences == "souspoid"  )
+biometry_fasfoodA <- filter (biometry_fastfoodA, fastfood != "NA")
+biometry_fastfoodA <- summarise (biometry_fastfoodA, "souspoid" = mean(fastfood))
+
+biometry_fastfoodB <-  filter (biometry2, sequences == "obese"  )
+biometry_fastfoodB <- filter (biometry_fastfoodB, fastfood != "NA")
+biometry_fastfoodB <- summarise (biometry_fastfoodB, "obèses" = mean(fastfood))
+
+biometry_fastfoodC <-  filter (biometry2,sequences == "surpoid"  )
+biometry_fastfoodC <- filter (biometry_fastfoodC, fastfood != "NA")
+biometry_fastfoodC <- summarise (biometry_fastfoodC, "surpoid" = mean(fastfood))
+
+biometry_fastfoodD <-  filter (biometry2,sequences == "normal"  )
+biometry_fastfoodD <- filter (biometry_fastfoodD, fastfood != "NA")
+biometry_fastfoodD <- summarise (biometry_fastfoodD, "normales" = mean(fastfood))
+
+biometry_fastfood <- bind_cols( biometry_fastfoodA, biometry_fastfoodD, biometry_fastfoodC, biometry_fastfoodB)
+
+knitr::kable(biometry_fastfood, digits = 2)
+
+```
+
+##grignotage
+```{r}
+biometry_grignotageA <-  filter (biometry2,sequences == "souspoid"  )
+biometry_grignotageA <- filter (biometry_grignotageA, grignotage != "NA")
+biometry_grignotageA <- summarise (biometry_grignotageA, " souspoid" = mean(grignotage))
+
+biometry_grignotageB <-  filter (biometry2,sequences == "obese"  )
+biometry_grignotageB <- filter (biometry_grignotageB, grignotage != "NA")
+biometry_grignotageB <- summarise (biometry_grignotageB, " obèses" = mean(grignotage))
+
+biometry_grignotageC <-  filter (biometry2,sequences == "surpoid"  )
+biometry_grignotageC <- filter (biometry_grignotageC, grignotage != "NA")
+biometry_grignotageC <- summarise (biometry_grignotageC, " surpoid" = mean(grignotage))
+
+biometry_grignotageD <-  filter (biometry2,sequences == "normal"  )
+biometry_grignotageD <- filter (biometry_grignotageD, grignotage != "NA")
+biometry_grignotageD <- summarise (biometry_grignotageD, "normales" = mean(grignotage))
+
+biometry_grignotage <- bind_cols( biometry_grignotageA, biometry_grignotageD, biometry_grignotageC, biometry_grignotageB)
+
+
+knitr::kable(biometry_grignotage, digits = 2)
+
+```
+
+##proteine_animale
+```{r}
+biometry_PA <-  filter (biometry2,sequences == "souspoid"  )
+biometry_PA <- filter (biometry_PA, proteine_animale != "NA")
+biometry_PA <- summarise (biometry_PA, "souspoid" = mean(proteine_animale))
+
+biometry_PB <-  filter (biometry2,sequences == "obese"  )
+biometry_PB <- filter (biometry_PB, proteine_animale != "NA")
+biometry_PB <- summarise (biometry_PB, "obèses" = mean(proteine_animale))
+
+biometry_PC <-  filter (biometry2,sequences == "surpoid"  )
+biometry_PC <- filter (biometry_PC, proteine_animale != "NA")
+biometry_PC <- summarise (biometry_PC, "surpoid" = mean(proteine_animale))
+
+biometry_PD <-  filter (biometry2,sequences == "normal"  )
+biometry_PD <- filter (biometry_PD, proteine_animale != "NA")
+biometry_PD <- summarise (biometry_PD, "normales" = mean(proteine_animale))
+
+biometry_P <- bind_cols( biometry_PA, biometry_PD, biometry_PC, biometry_PB)
+
+knitr::kable(biometry_P, digits = 2)
+=======
+---
+title: "graphique_en_fonction_des_causes"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+SciViews::R
+(biometry <- read_csv("https://docs.google.com/spreadsheets/d/1UfpZvx1_nd7d10vIMAfGVZ1vWyIuzeiKxPL0jfkNSQM/export?format=csv", locale = locale(decimal_mark = ",")))
+library(tidyverse)
+library(plotly)
+library(ggplot2)
+library(ggExtra)
+data(mpg, package="ggplot2")
+library(ggridges)
+
+biometry_IMC <- mutate(biometry, IMC = masse/taille^2)
+biometry2 <- mutate(biometry_IMC, surpoid = IMC >= 25 & IMC < 30, obese = IMC> 30, normal = IMC <25 & IMC >= 18.5 , souspoid = IMC < 18.5)
+
+biometry2 <- gather(biometry2,
+   souspoid, normal, obese, surpoid, key = "sequences", value = "rapport_imc")
+
+biometry2 <- filter (biometry2, rapport_imc != FALSE)
+
+chart(data = biometry2, ~ factor(0) %fill=% sequences) +
+  geom_bar(width = 1) + 
+  coord_polar("y", start = 0) +
+  theme_void() +
+  scale_fill_viridis_d()
+
+```
+## mise en place
+### Causes déterminantes probables (en théorie) de surpoid ou d'obésité
+alcool
+fastfood
+grignotage
+proteine_animale
+### facteurs séparant plusieurs domaines
+genre
+age
+### causes qui pourrait déterminer des souspoids ou normaux (ou autres)
+acti_profession (facteur)
+acti_physique 
+
+#Graphiques
+## Alcool
+```{r}
+biometry_alcoolA <-  filter (biometry2,sequences == "souspoid"  )
+biometry_summaryA <- summarise (biometry_alcoolA, "moyenne de consommation d'alcool pour les personnes en souspoid" = mean(alcool))
+knitr::kable(biometry_summaryA, digits = 2)
+
+biometry_alcoolB <-  filter (biometry2,sequences == "obese"  )
+biometry_alcoolB <- filter (biometry_alcoolB, alcool != "NA")
+
+biometry_summaryB <- summarise (biometry_alcoolB, "moyenne de consommation d'alcool pour les personnes obèses" = mean(alcool))
+knitr::kable(biometry_summaryB, digits = 2)
+
+biometry_alcoolC <-  filter (biometry2,sequences == "surpoid"  )
+biometry_alcoolC <- filter (biometry_alcoolC, alcool != "NA")
+biometry_summaryC <- summarise (biometry_alcoolC, "moyenne de consommation d'alcool pour les personnes en surpoid" = mean(alcool))
+knitr::kable(biometry_summaryC, digits = 2)
+
+biometry_alcoolD <-  filter (biometry2,sequences == "normal"  )
+biometry_alcoolD <- filter (biometry_alcoolD, alcool != "NA")
+
+biometry_summaryD <- summarise (biometry_alcoolD, "moyenne de consommation d'alcool pour les personnes normales" = mean(alcool))
+knitr::kable(biometry_summaryD, digits = 2)
+
+
+```
+## fastfood
+```{r}
+biometry_fastfoodA <-  filter (biometry2,sequences == "souspoid"  )
+biometry_fasfoodA <- filter (biometry_fastfoodA, fastfood != "NA")
+biometry_summaryA2 <- summarise (biometry_fastfoodA, "moyenne de consommation de fastfood pour les personnes en souspoid" = mean(fastfood))
+knitr::kable(biometry_summaryA2, digits = 2)
+
+biometry_fastfoodB <-  filter (biometry2, sequences == "obese"  )
+biometry_fastfoodB <- filter (biometry_fastfoodB, fastfood != "NA")
+biometry_summaryB2 <- summarise (biometry_fastfoodB, "moyenne de consommation de fastfood pour les personnes obèses" = mean(fastfood))
+knitr::kable(biometry_summaryB2, digits = 2)
+
+biometry_fastfoodC <-  filter (biometry2,sequences == "surpoid"  )
+biometry_fastfoodC <- filter (biometry_fastfoodC, fastfood != "NA")
+biometry_summaryC2 <- summarise (biometry_fastfoodC, "moyenne de consommation de fastfood pour les personnes en surpoid" = mean(fastfood))
+knitr::kable(biometry_summaryC2, digits = 2)
+
+biometry_fastfoodD <-  filter (biometry2,sequences == "normal"  )
+biometry_fastfoodD <- filter (biometry_fastfoodD, fastfood != "NA")
+
+biometry_summaryD2 <- summarise (biometry_fastfoodD, "moyenne de consommation de fastfood pour les personnes normales" = mean(fastfood))
+knitr::kable(biometry_summaryD2, digits = 2)
+
+
+```
+
+##grignotage
+```{r}
+biometry_grignotageA <-  filter (biometry2,sequences == "souspoid"  )
+biometry_grignotageA <- filter (biometry_grignotageA, grignotage != "NA")
+biometry_summaryA3 <- summarise (biometry_grignotageA, "moyenne de consommation de grignotage pour les personnes en souspoid" = mean(grignotage))
+knitr::kable(biometry_summaryA3, digits = 2)
+
+biometry_grignotageB <-  filter (biometry2,sequences == "obese"  )
+biometry_grignotageB <- filter (biometry_grignotageB, grignotage != "NA")
+biometry_summaryB3 <- summarise (biometry_grignotageB, "moyenne de consommation de grignotage pour les personnes obèses" = mean(grignotage))
+knitr::kable(biometry_summaryB3, digits = 2)
+
+biometry_grignotageC <-  filter (biometry2,sequences == "surpoid"  )
+biometry_grignotageC <- filter (biometry_grignotageC, grignotage != "NA")
+biometry_summaryC3 <- summarise (biometry_grignotageC, "moyenne de consommation de grignotage pour les personnes en surpoid" = mean(grignotage))
+knitr::kable(biometry_summaryC3, digits = 2)
+
+biometry_grignotageD <-  filter (biometry2,sequences == "normal"  )
+biometry_grignotageD <- filter (biometry_grignotageD, grignotage != "NA")
+biometry_summaryD3 <- summarise (biometry_grignotageD, "moyenne de consommation de grignotage pour les personnes normales" = mean(grignotage))
+knitr::kable(biometry_summaryD3, digits = 2)
+```
+
+##proteine_animale
+```{r}
+biometry_PA <-  filter (biometry2,sequences == "souspoid"  )
+biometry_PA <- filter (biometry_PA, proteine_animale != "NA")
+biometry_summaryA4 <- summarise (biometry_PA, "moyenne de consommation de proteine animale pour les personnes en souspoid" = mean(proteine_animale))
+knitr::kable(biometry_summaryA4, digits = 2)
+
+biometry_PB <-  filter (biometry2,sequences == "obese"  )
+biometry_PB <- filter (biometry_PB, proteine_animale != "NA")
+biometry_summaryB4 <- summarise (biometry_PB, "moyenne de consommation de proteine animale pour les personnes obèses" = mean(proteine_animale))
+knitr::kable(biometry_summaryB4, digits = 2)
+
+biometry_PC <-  filter (biometry2,sequences == "surpoid"  )
+biometry_PC <- filter (biometry_PC, proteine_animale != "NA")
+biometry_summaryC4 <- summarise (biometry_PC, "moyenne de consommation de proteine animale pour les personnes en surpoid" = mean(proteine_animale))
+knitr::kable(biometry_summaryC4, digits = 2)
+
+biometry_PD <-  filter (biometry2,sequences == "normal"  )
+biometry_PD <- filter (biometry_PD, proteine_animale != "NA")
+biometry_summaryD4 <- summarise (biometry_PD, "moyenne de consommation de proteine animale pour les personnes normales" = mean(proteine_animale))
+knitr::kable(biometry_summaryD4, digits = 2)
+
+>>>>>>> e3565d2f6006ac5c75015948ae265a029dfeb7ee

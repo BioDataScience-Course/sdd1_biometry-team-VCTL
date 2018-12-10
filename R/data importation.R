@@ -9,4 +9,4 @@ biometry$genre <- as.factor(biometry$genre)
 visdat::vis_dat(biometry)
 
 
-write$rds(biometry, file = "./data/biometry.rds", compress = "gz")
+write$rds(biometry, file = "/../data/biometry.rds", compress = "gz")
