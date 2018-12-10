@@ -3,7 +3,7 @@ title: "Biometry module 6"
 output: html_document
 ---
 
-#Introduction
+# Introduction
 Travail en groupe par rapport à l'étude de la biométrie d'une population de Belgique. Les données ont été récolté par chaque membre de la classe. Il y a différentes variable qui ont été mis dans notre tableau de données. 
 Ces différentes variables nous permettront d'établir si les différents individus sont obèses. On a mesures d'autres variables qui elles pourraient être les causes d'une obesité ou non.
 # But
@@ -13,7 +13,7 @@ Notre but est déterminer le taux d'obesité dans notre échantillonnage. Ainsi 
 Nous avons utilisé Markdown et les données que tous les membres de la classe ont prélevé pour établir un tableau de données par la suite.
 
 # Résultats
-##Importation des données et des outils nécessaires
+## Importation des données et des outils nécessaires
 ```{r}
 SciViews::R
 (biometry <- read_csv("https://docs.google.com/spreadsheets/d/1UfpZvx1_nd7d10vIMAfGVZ1vWyIuzeiKxPL0jfkNSQM/export?format=csv", locale = locale(decimal_mark = ",")))
@@ -45,9 +45,9 @@ knitr::kable(biometry_summarise, digits = 2)
 
 ```
 
-#Test chi carré
+# Test chi carré
 
-##on peut se demander si la valeur de notre IMC diffère en fonction de notre appartenance ou non au hainaut.
+## On peut se demander si la valeur de notre IMC diffère en fonction de notre appartenance ou non au hainaut.
 ```{r}
 ?case_when()
 ```
@@ -61,18 +61,19 @@ biometry2$IMC <-as.factor(biometry2$IMC)
 skimr::skim(biometry2)
 ```
 
-#####Graphiques / visualisation:
+##### Graphiques / visualisation:
 
 
 ```{r}
 biometry_IMC <- mutate(biometry, IMC = masse/taille^2)
 biometry2 <- mutate(biometry_IMC, surpoid = IMC >= 25 & IMC < 30, obese = IMC> 30, normal = IMC <25 & IMC >= 18.5 , souspoid = IMC < 18.5)
+
 biometry2 <- gather(biometry2,
    souspoid, normal, obese, surpoid, key = "sequences", value = "rapport_imc")
 chart(biometry2, ~ hainaut | IMC) + geom_bar()
 ```
 
-#####Test chi carré
+##### Test chi carré
 
 voici nos 2 hypothèses:
 
@@ -93,24 +94,20 @@ biometry2 %>.%
 ```
 
 
-#####Analyses
-
-
-#####Discussion
+##### Analyses
 
 
 
 
 
+# Test de student
 
-#Test de student
-
-##Est ce que la masse corrigée des personnes est identique dans la population selon le genre ou es ce que l'un des genres est en moyenne plus lourd que l autre ?:
+## Est ce que la masse corrigée des personnes est identique dans la population selon le genre ou es ce que l'un des genres est en moyenne plus lourd que l autre ?:
 
 observons ceci tout d'abord par une représentation graphique pour avoir une idée.
 
 
-#####Graphique
+##### Graphique
 ```{r}
 biometry<-filter(biometry, genre !="NA")
 
@@ -123,7 +120,7 @@ chart(data = biometry, masse_corr ~ genre %fill=% genre) +
 
 Sur le graphique, il semble que les hommes (sex == "h") tendent à avoir une masse corrigée plus grande (variable masse-corr) que les femmes (sex == "f"), mais cette différence est-elle significative ou peut-elle être juste liée au hasard de l’échantillonnage ? Pour y répondre, nous devons élaborer un test de student qui va confronter les hypothèses suivantes (en se basant sur les moyennes) :
 
-#####test de student
+##### Test de student
 
 voici nos 2 hypothèses :
 
@@ -141,7 +138,7 @@ test de student :
 t.test(data = biometry, masse_corr ~ genre,
   alternative = "two.sided", conf.level = 0.95, var.equal = TRUE)
 ```
-######Analyses 
+###### Analyses 
 
 
 
@@ -150,7 +147,7 @@ Prenons une valeur de α de 5% , (α = 0.05).On compare notre valeur de α avec 
 
 comme p <<<< α on rejette Ho qui se situe dans la zone de rejet.
 
-######representation graphique des distributions:
+###### Representation graphique des distributions:
 
 
 ```{r}
@@ -201,18 +198,18 @@ le quantile correspondant à l'hypothèse H0 (ligne verte)est situé dans la zon
 
 
 
-######Discussion
+###### Discussion
 
 On en conclu donc que l hypothèse H1 est correcte et que la moyenne de la masse corrigée dans notre population sera significativement plus importante chez les hommes que chez les femmes.
 
-#Test de Wilcoxon
+# Test de Wilcoxon
 
-##On peut maintenant se demander si la taille des personnes est identique dans la population selon le genre ou es ce que l'un des genres est en moyenne plus grand que l autre ?:
+## On peut maintenant se demander si la taille des personnes est identique dans la population selon le genre ou es ce que l'un des genres est en moyenne plus grand que l autre ?:
 
 
 Dans le test de student nous avons supposé que la distribution de départ était de type normal.Or lorsqu'on a un faible échantillonage on peut douter que la distribution suis bien une loi normale on va donc utiliser un autre test celui de Test de Wilcoxon-Mahn-Withney une version non-paramétrique du test de student.
 
-#####Graphique
+##### Graphique
 
 ```{r}
 biometry<-filter(biometry, genre !="NA")
@@ -224,7 +221,7 @@ chart(data = biometry, taille ~ genre %fill=% genre) +
   geom_boxplot(na.rm = TRUE) + stat_summary(fun.data = give_n, geom = "text", hjust = 0.5)
 ```
 
-#####Analyses
+##### Analyses
 
 Sur le graphique, il semble que les hommes (sex == "h") tendent à avoir une taille plus grande (variable taille) que les femmes (sex == "f"), mais cette différence est-elle significative ou peut-elle être juste liée au hasard de l’échantillonnage ? Pour y répondre, nous devons élaborer un Test de Wilcoxon-Mahn-Withney qui va confronter les hypothèses suivantes (en se basant sur les médianes) :
 
@@ -235,7 +232,7 @@ voici nos 2 hypothèses:
 H0:P(taillef>tailleh)=P(taillef<tailleh)
 H1:P(taillef>tailleh)≠P(taillef<tailleh)
 
-######Test de Wilcoxon-Mahn-Withney:
+###### Test de Wilcoxon-Mahn-Withney:
 
 
 ```{r}
@@ -243,14 +240,14 @@ wilcox.test(data = biometry, taille ~ genre,
   alternative = "less", conf.level = 0.95)
 ```
 
-######Analyses 
+###### Analyses 
 
 Prenons une valeur de α de 5% , (α = 0.05).On compare notre valeur de α avec notre valeur de p qui est de: p-value=2.2e-16.
 
 comme p <<<< α on rejette Ho qui se situe dans la zone de rejet.
 
 
-#####Discussion
+##### Discussion
 
 On en conclu donc que l hypothèse H1 est correcte et que la moyenne de la taille dans notre population sera significativement plus importante chez les hommes que chez les femmes.
 
@@ -262,8 +259,7 @@ Imaginons que nous voulons comparer la masse corrigée des individus en fonction
 
 ```{r}
 ## Cutting biometry$age into biometry$age_rec
-biometry$age_rec <- cut(biometry$age, include.lowest=FALSE,  right=TRUE,
-                        breaks=c(0, 20, 50,100))
+biometry$age_rec <- cut(biometry$age, include.lowest=FALSE,  right=TRUE, breaks=c(0, 20, 50,100))
 
 biometry$age_rec <- as.ordered(biometry$age_rec)
 
@@ -275,7 +271,7 @@ biometry$age_rec <- as.ordered(biometry$age_rec)
 
 Nous pourions comparer chaque groupe l'un avec l'autre c'est long et nous ne le ferons pas car à chaque test nous prenons un risque de nous tromper. Le risque de se tromper au moins une fois dans l’ensemble des tests est alors décuplé en cas de tests multiples.
 
-#####Graphiques et visualisations
+##### Graphiques et visualisations
 
 ```{r}
 biometry %>.%
@@ -294,11 +290,11 @@ biometry %>.%
   stat_summary(geom = "point", fun.y = "mean", color = "green", size = 4) # J'ajoute la moyenne en vert
 ```
 
-#####Analyses
+##### Analyses
 
 On semble voir une différence entre les différentes classes mais cette différence est t'elle significatice ou npas ? pour le savoir on va réaliser  un test de Kruskal-Wallis ou utiliser le modèle de l'ANOVA:
 
-#####ANOVA ou Kruskal-Wallis ?
+##### ANOVA ou Kruskal-Wallis ?
 
 test anova:
 
@@ -329,7 +325,7 @@ bartlett.test(data = .,log(masse_corr) ~ age_rec)
 
 ici la p-value est suppérieur a alpha(0.05) on peut donc utiliser l'ANOVA avec log(masse-corr)
 
-######visualisation:
+###### Visualisation:
 
 ```{r}
 biometry %>.%
@@ -366,7 +362,7 @@ anova. %>.%
 ```
 on observe que la distribution est non normale pour les valeurs plus importante on prèferera donc utiliser le modèle non paramétrique du test de Kruskal-Wallis
 
-#####Test de Kruskal-Wallis
+##### Test de Kruskal-Wallis
 
 Dans le test de Kruskal-Wallis, sous H0 nous avons le même rang moyen (noté mr) pour chaque groupe parmi k. Sous H1, au moins deux groupes ont des rangs moyens différents:
 
@@ -378,11 +374,11 @@ H1:∃(i,j) tel que mri≠mrj
 kruskal.test(data = biometry, masse_corr ~ age_rec)
 ```
 
-#####Analyses
+##### Analyses
 
 comme p-value est bien plus petit qu'aplha (0.05) on rejette H0 et on peut dire qu'il existe au moins une différence significative entre les ratios .
 
-#####Test post hoc
+##### Test post hoc
 
 on a déterminer une différencee significative mais est t'elle présente entre tout les groupes ou seulement entre certain ? on réalise un test post hoc pour le savoir(test de tukey):
 
@@ -394,7 +390,7 @@ summary(kw_comp. <- nparcomp::nparcomp(data = biometry, masse_corr ~ age_rec))
 plot(kw_comp.)
 ```
 
-#####Discussion
+##### Discussion
 
 Ici, toutes les différences sont considérées comme significatives sauf  la comparaison des [20-50]-[50-100] avec une valeur P tout juste non significative de 6.833583e-02 mais à prendre avec des pincettes étant donné sa proximité du seuil.
 

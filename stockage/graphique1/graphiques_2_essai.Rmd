@@ -89,7 +89,7 @@ chart(data = biometry2, proteine_animale ~ sequences %fill=% sequences) + geom_b
 
 ```
 
-##Graphiques par rapport à différents charactères
+##Graphiques par rapport à différents caractères
 ### Graphiques par rapport au genre
 ```{r}
 chart(data= biometry2, ~ genre %fill=% sequences) + geom_bar()
@@ -126,5 +126,40 @@ chart(data = biometry2, ~ acti_physique %fill=% sequences | sequences) +
 
 chart(data = biometry2, acti_physique ~ sequences %fill=% sequences) + geom_boxplot(show.legend = FALSE)
 
+```
+
+
+### graphique comparant l'imc et les 4 causes pouvant augmenter le poids ( alcool, grignotage, fastfood, protéine animal )
+
+```{r}
+a <- chart(data = biometry2, ~ alcool %fill=%sequences) + 
+  geom_histogram(bins= 50) 
+
+b <- chart(data = biometry2, ~ fastfood %fill=%sequences) + 
+  geom_histogram(bins= 50)  
+
+c <- chart(data = biometry2, ~ grignotage %fill=%sequences) + 
+  geom_histogram(bins= 50)  
+
+d <- chart(data = biometry2, ~ proteine_animale %fill=%sequences) + 
+  geom_histogram(bins= 50)  
+
+combine_charts(list(a, b, c, d))
+```
+
+```{r}
+a <- chart(data = biometry2, IMC ~ alcool %fill=%sequences) + 
+  geom_violin () 
+
+b <- chart(data = biometry2, IMC ~ fastfood %fill=%sequences) + 
+  geom_violin()  
+
+c <- chart(data = biometry2, IMC ~ grignotage %fill=%sequences) + 
+  geom_violin()  
+
+d <- chart(data = biometry2, IMC ~ proteine_animale %fill=%sequences) + 
+  geom_violin()  
+
+combine_charts(list(a, b, c, d))
 ```
 
