@@ -4,33 +4,29 @@ output: html_document
 ---
 
 # Introduction
+
 Travail en groupe par rapport à l'étude de la biométrie d'une population de Belgique. Les données ont été récolté par chaque membre de la classe. Il y a différentes variable qui ont été mis dans notre tableau de données. 
 Ces différentes variables nous permettront d'établir si les différents individus sont obèses. On a mesures d'autres variables qui elles pourraient être les causes d'une obesité ou non.
 # But
+
 Notre but est déterminer le taux d'obesité dans notre échantillonnage. Ainsi qu'essayer d'en déduire les causes d'obesité.
 
 # Matériel et méthodes utilisées
+
 Nous avons utilisé Markdown et les données que tous les membres de la classe ont prélevé pour établir un tableau de données par la suite.
 
 # Résultats
 ## Importation des données et des outils nécessaires
+
 ```{r}
 SciViews::R
 (biometry <- read_csv("https://docs.google.com/spreadsheets/d/1UfpZvx1_nd7d10vIMAfGVZ1vWyIuzeiKxPL0jfkNSQM/export?format=csv", locale = locale(decimal_mark = ",")))
 
 ```
 
-## Filtrage des données
-Il y a beaucoup de NA et d'espace inutile dans notre tableau.
-
-```{r}
-#biometry <- filter (biometry, taille != NA)
-
-# encore à modifier
-```
-
 ## Etudes des données
-### Tableau résumé
+### Tableau résumé : moyenne du poids et moyenne de taille 
+
 ```{r}
 rmarkdown::paged_table(biometry)
 biometry1 <- filter (biometry, taille>0, masse >0 , )
@@ -39,11 +35,8 @@ biometry_summarise <- summarise(biometry1 ,
   "moyenne masse" = mean(masse))
 knitr::kable(biometry_summarise, digits = 2)
 
-
-
-
-
 ```
+
 
 # Test chi carré
 
