@@ -68,6 +68,8 @@ knitr::kable(biometry_summaryD, digits = 2)
 
 
 ```
+On constate que la moyenne d'alcool pour les différents groupes ("souspoids", "normal", "surpoids","obèse") augmente en même temps que le IMC , on peut donc faire une corrélation entre les 2 variables. Ce lien constiste à dire que la consommation d'alcool entraine l'augmentation de l'IMC cependant il faut prendre ces résultats avec précautions car nous avons des valeurs extrèmes qui faussent notre moyenne est l'écart des valeurs réelles de la majorité de la populations. 
+
 ## fastfood
 ```{r}
 biometry_fastfoodA <-  filter (biometry2,sequences == "souspoid"  )
@@ -93,6 +95,8 @@ knitr::kable(biometry_summaryD2, digits = 2)
 
 
 ```
+Ici les moyennes donnent des conclusions moins significatives. On remarque que la moyenne la plus faible est attribuée à la catégorie du "souspoids", cependant la moyenne la plus forte est celle du groupe normal.Dans les groupes "souspoids","surpoids" et "obèse" on a une augmentation lié à la montée du IMC. Le groupe"normal" ne suit pas notre hypothèse, les différentes raisons sont que soit les fastfood n'ont pas de lien avec la prise de point ou soit nous avons oublié de tenir compte d'une autre variable pouvant influencer sur l'IMC ( 2 hypothèse est la bonne car la catégorie "normale" est le groupe fesant le plus de sport , il faut fairedonc tout suite après un graphique sur le sport )
+
 
 ##grignotage
 ```{r}
@@ -116,6 +120,8 @@ biometry_grignotageD <- filter (biometry_grignotageD, grignotage != "NA")
 biometry_summaryD3 <- summarise (biometry_grignotageD, "moyenne de consommation de grignotage" = mean(grignotage))
 knitr::kable(biometry_summaryD3, digits = 2)
 ```
+Pour les moyennes du grignotage, le groupe du "souspoids" à la moyenne la plus forte est le groupe "obèse" possède la moyenne la plus faible. Ces résultats sont très intéressant on peut voir un lien entre l'IMC et le grignotage.En moyenne les personnes grignotant beaucoup ont un poids plus faible.
+L'idée populaire est que grignoter entraine le surpoids mais notre analyse statistique nous prouvent le contraire. En effet comme l'individu absorbe de petite quantité tout au long de la journée, il prends donc une moins grande quantité de nourriture pendant les grands repas ce qui explique l'IMC plus faible. Il faut cependant prendre ces résultats avec des pincettes car nous avons pas déterminer le type de grignotage : fruits ou friandises.
 
 ##proteine_animale
 ```{r}
