@@ -6,6 +6,7 @@ biometry %>.%
   filter(., ! is.na(masse_corr)) -> biometry
 
 biometry$genre <- as.factor(biometry$genre)
+biometry$hainaut <- as.factor(biometry$hainaut)
 visdat::vis_dat(biometry)
 
 

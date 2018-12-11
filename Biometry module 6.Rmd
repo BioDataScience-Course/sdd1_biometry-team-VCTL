@@ -40,14 +40,29 @@ knitr::kable(biometry_summarise, digits = 2)
 
 # Test chi carré
 
-## On peut se demander si la valeur de notre IMC diffère en fonction de notre appartenance ou non au hainaut.
+## On peut se demander si la quantitée de personne classé pour un IMC "normal", diffère en fonction de notre appartenance ou non au hainaut.
 ```{r}
-?case_when()
+biometry_IMC <- mutate(biometry, IMC = masse/taille^2)
+biometry2 <- mutate(biometry_IMC, surpoid = IMC >= 25 & IMC < 30, obese = IMC> 30, normal = IMC <25 & IMC >= 18.5 , souspoid = IMC < 18.5)
+
+biometry2 <- gather(biometry2,
+   souspoid, normal, obese, surpoid, key = "sequences", value = "rapport_imc")
+
+biometry2 <- filter (biometry2, rapport_imc != FALSE)
+#skimr::skim(biometry2)
+
+chart (biometry2, ~ IMC %fill=% sequences | hainaut) + geom_bar()
+
+biometry3 <- group_by(biometry_IMC, IMC)
+
+head(biometry3)
+
 ```
+
 
 ```{r}
 biometry_IMC <- mutate(biometry, IMC = masse/taille^2)
-biometry2 <- mutate(biometry_IMC, imc_class = case_when("anormal" == IMC > 25 & IMC < 18.5 ,"normal" == IMC < 25 & IMC >= 18.5)
+biometry2 <- mutate(biometry_IMC, imc_class = case_when("anormal" == IMC > 25 & IMC < 18.5 ,"normal" == IMC < 25 & IMC > 18.5)
 
 biometry2$IMC <-as.factor(biometry2$IMC)
 
