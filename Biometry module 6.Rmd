@@ -5,7 +5,7 @@ output: html_document
 
 # Introduction
 Travail en groupe par rapport à l'étude de la biométrie d'une population de Belgique. Les données ont été récolté par chaque membre de la classe. Il y a différentes variable qui ont été mis dans notre tableau de données. 
-Ces différentes variables nous permettront d'établir si les différents individus sont obèses. On a mesures d'autres variables qui elles pourraient être les causes d'une obesité ou non.
+Ces différentes variables nous permettront d'établir si les différents individus sont obèses. On a mesuré d'autres variables qui elles pourraient être les causes d'une obesité ou non.
 # But
 Notre but est déterminer le taux d'obesité dans notre échantillonnage. Ainsi qu'essayer d'en déduire les causes d'obesité.
 
@@ -20,15 +20,6 @@ SciViews::R
 
 ```
 
-## Filtrage des données
-Il y a beaucoup de NA et d'espace inutile dans notre tableau.
-
-```{r}
-#biometry <- filter (biometry, taille != NA)
-
-# encore à modifier
-```
-
 ## Etudes des données
 ### Tableau résumé
 ```{r}
@@ -38,10 +29,6 @@ biometry_summarise <- summarise(biometry1 ,
   "moyenne taille" = mean(taille), 
   "moyenne masse" = mean(masse))
 knitr::kable(biometry_summarise, digits = 2)
-
-
-
-
 
 ```
 
