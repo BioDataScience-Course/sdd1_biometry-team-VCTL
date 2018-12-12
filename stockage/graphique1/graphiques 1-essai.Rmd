@@ -163,9 +163,19 @@ p=ggplot(biometry2, aes(x= alcool, y= IMC , color= sequences, shape= genre)) +
 ggplotly(p)
 ```
 
+```{r}
+nbins <- 25
+chart(data = biometry2, ~ alcool %fill=% sequences | sequences) +
+  geom_histogram(data = select(biometry2, -sequences), fill = "grey", bins = nbins) + 
+  geom_histogram(show.legend = FALSE, bins = nbins, na.rm = FALSE) +
+  ylab("Effectifs") +
+  scale_fill_viridis_d()
+chart(data = biometry2, alcool ~ sequences %fill=% sequences) + geom_boxplot(show.legend = FALSE)
 
-
-
+```
+Les graphiques nous confirment nos premières analyses . Les individus en sous-poids prennent moins d'alcool que les individus en surpoids.
+On peut également mettre en lien, l'age et l'alcool car on a constaté plus tôt que les individus jeunes sont en général plus en sous-poids que les adultes et les personnes agés. Dans notre catégorie de jeune, il y a des personnes ayant un age inférieur à 16 ans qui est la limite d'autorisation pour l'alcool, les individus plus agé sont plus confronté à l'alcool que les jeunes.
+Attention cependant, beaucoup d'autres facteurs peut interférer.
 
 
 
