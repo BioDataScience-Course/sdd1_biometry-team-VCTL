@@ -42,22 +42,33 @@ knitr::kable(biometry_summarise, digits = 2)
 
 ## On peut se demander si la quantitée de personne classé pour un IMC "normal", diffère en fonction de notre appartenance ou non au hainaut.
 ```{r}
-biometry_IMC <- mutate(biometry, IMC = masse/taille^2)
-biometry2 <- mutate(biometry_IMC, surpoid = IMC >= 25 & IMC < 30, obese = IMC> 30, normal = IMC <25 & IMC >= 18.5 , souspoid = IMC < 18.5)
+biometry <- mutate(biometry, IMC = masse/taille^2)
+biometry <- mutate(biometry, surpoid = IMC >= 25 & IMC < 30, obese = IMC> 30, normal = IMC <25 & IMC >= 18.5 , souspoid = IMC < 18.5)
 
-biometry2 <- gather(biometry2,
+biometry <- gather(biometry,
    souspoid, normal, obese, surpoid, key = "sequences", value = "rapport_imc")
 
-biometry2 <- filter (biometry2, rapport_imc != FALSE)
-#skimr::skim(biometry2)
+biometry <- filter (biometry, rapport_imc != FALSE)
 
-chart (biometry2, ~ IMC %fill=% sequences | hainaut) + geom_bar()
+## Cutting biometry$age into biometry$age_rec
+biometry$age_rec <- cut(biometry$age, include.lowest=FALSE,  right=TRUE,
+                        breaks=c(0, 20, 40, 60, 110))
 
-biometry3 <- group_by(biometry_IMC, IMC)
+biometry
 
-head(biometry3)
+
 
 ```
+
+```{r}
+biometry<- group_by(biometry, age_rec , rapport_imc)
+biometry<- summarise ( biometry, n = n() )
+biometry<- spread(biometry, key = "rapport_imc" , value="n")
+
+biometry
+```
+
+
 
 
 ```{r}

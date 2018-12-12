@@ -4,10 +4,12 @@ SciViews::R
 
 biometry %>.%
   filter(., ! is.na(masse_corr)) -> biometry
-
+filter(., ! is.na(age)) -> biometry
 biometry$genre <- as.factor(biometry$genre)
 biometry$hainaut <- as.factor(biometry$hainaut)
+biometry$acti_profession <- as.factor(biometry$acti_profession)
 visdat::vis_dat(biometry)
 
 
 write$rds(biometry, file = "./data/biometry.rds", compress = "gz")
+
