@@ -9,11 +9,15 @@ Travail en groupe par rapport à l'étude de la biométrie d'une population de B
 Ces différentes variables nous permettront d'établir si les différents individus sont obèses. On a mesuré d'autres variables qui elles pourraient être les causes d'une obesité ou non.
 # But
 
-Notre but est déterminer le taux d'obesité dans notre échantillonnage. Ainsi qu'essayer d'en déduire les causes d'obesité.
+Notre but est déterminer le taux d'obesité dans notre échantillonnage. Ainsi qu'essayer d'en déduire les causes d'obésité.
 
 # Matériel et méthodes utilisées
 
-Nous avons utilisé Markdown et les données que tous les membres de la classe ont prélevé pour établir un tableau de données par la suite.
+Nous avons utilisé Markdown et les données que tous les membres de la classe ont prélevé pour établir un tableau de données par la suite. Pour déterminer si un individu est en surpoids, on calcule l'IMC. C'est à dire "l'indicatif de masse corporel". Si notre individu a une IMC inférieur à 18.5, il est classé dans la catégorie "sous-poids", si une personne a un IMC entre 18.5 et en dessous de 25, elle se situe dans le groupe "normal", si un individu a un IMC égal ou supérieur à 25 et inférieur à 30 il est dans la catégorie "surpoids" et enfin les personnes ayant un indice dépaçant les 30, il est placé dans le groupe "obèse". 
+L'IMC est un calcul fortement utilsé par le milieu médical pour déterminer dans quel groupe se situé l'individu et permettre d'agir en conséquence. 
+Pour calculer l'IMC, il fait mesurer la masse(en kg) et la diviser par la taille (en mètre) au carré.
+
+Le poids et la taille ( donc l'IMC) peut être influencer par toute une multitude de facteurs. Dans notre échantillonnage nous avons essaye de prendre en compte tout ces facteurs pouvant influencer l'IMC. Comme par exemple les habitudes alimentaires, les activités sportives,...
 
 # Résultats
 ## Importation des données et des outils nécessaires
@@ -37,6 +41,11 @@ knitr::kable(biometry_summarise, digits = 2)
 
 ```
 
+### Approche graphique sur la question
+
+
+
+_________________
 
 # Test chi carré
 
