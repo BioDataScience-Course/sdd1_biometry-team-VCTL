@@ -1,4 +1,3 @@
-
 ---
 title: "Biometry module 6"
 output: html_document
@@ -21,7 +20,7 @@ Nous avons utilisé Markdown et les données que tous les membres de la classe o
 
 ```{r}
 SciViews::R
-(biometry <- read_csv("https://docs.google.com/spreadsheets/d/1UfpZvx1_nd7d10vIMAfGVZ1vWyIuzeiKxPL0jfkNSQM/export?format=csv", locale = locale(decimal_mark = ",")))
+biometry <- read("data/biometry.rds")
 
 ```
 
@@ -44,20 +43,32 @@ knitr::kable(biometry_summarise, digits = 2)
 ## On peut se demander si la quantitée de personne classé pour un IMC "normal", diffère en fonction de notre appartenance ou non au hainaut.
 ```{r}
 biometry <- mutate(biometry, IMC = masse/taille^2)
-biometry <- mutate(biometry, surpoid = IMC >= 25 & IMC < 30, obese = IMC> 30, normal = IMC <25 & IMC >= 18.5 , souspoid = IMC < 18.5)
+biometry <- mutate(biometry,
+  rapport_imc = case_when(
+    IMC < 18.5 ~ "souspoid",
+    IMC >= 18.5 & IMC < 25 ~ "normal",
+    IMC >= 25 & IMC < 30 ~ "surpoids",
+    IMC >= 30 ~ "obese"
+))
 
-biometry <- gather(biometry,
-   souspoid, normal, obese, surpoid, key = "sequences", value = "rapport_imc")
-
-biometry <- filter (biometry, rapport_imc != FALSE)
+chart(biometry, ~ rapport_imc) +
+  geom_bar()
 
 ## Cutting biometry$age into biometry$age_rec
 biometry$age_rec <- cut(biometry$age, include.lowest=FALSE,  right=TRUE,
                         breaks=c(0, 20, 40, 60, 110))
 
-biometry
+chart(biometry, ~ age_rec) +
+  geom_bar()
 
 
+biometry %>.%
+  filter(., rapport_imc == "normal") %>.%
+  chart(., ~ age_rec) +
+  geom_bar()
+
+biometry %>.%
+  filter(., rapport_imc == "normal") -> biom_normal
 
 ```
 
