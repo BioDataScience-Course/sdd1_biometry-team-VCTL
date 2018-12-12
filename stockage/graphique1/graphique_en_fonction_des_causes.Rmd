@@ -144,4 +144,5 @@ biometry_PD <-  filter (biometry2,sequences == "normal"  )
 biometry_PD <- filter (biometry_PD, proteine_animale != "NA")
 biometry_summaryD4 <- summarise (biometry_PD, "moyenne de consommation de proteine animale" = mean(proteine_animale))
 knitr::kable(biometry_summaryD4, digits = 2)
-
+```
+Le groupe des "souspoids" possède la moyenne la plus faible et le groupe"obèse" possède la moyenne la plus grande. On peut conclure que les protéines animals ont une influence avec la prise de poids. Pour la catégorie "normal"et"surpoids"les valeurs sont assez proche. Il doit y avoir un autre facteur qui doit influencé l'IMC.
