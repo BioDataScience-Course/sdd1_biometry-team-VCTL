@@ -7,9 +7,15 @@ output: html_document
 
 Travail en groupe par rapport à l'étude de la biométrie d'une population de Belgique. Les données ont été récolté par chaque membre de la classe. Il y a différentes variable qui ont été mis dans notre tableau de données. 
 Ces différentes variables nous permettront d'établir si les différents individus sont obèses. On a mesuré d'autres variables qui elles pourraient être les causes d'une obesité ou non.
+
+
+
 # But
 
 Notre but est déterminer le taux d'obesité dans notre échantillonnage. Ainsi qu'essayer d'en déduire les causes d'obésité.
+
+
+
 
 # Matériel et méthodes utilisées
 
@@ -18,6 +24,10 @@ L'IMC est un calcul fortement utilsé par le milieu médical pour déterminer da
 Pour calculer l'IMC, il fait mesurer la masse(en kg) et la diviser par la taille (en mètre) au carré.
 
 Le poids et la taille ( donc l'IMC) peut être influencer par toute une multitude de facteurs. Dans notre échantillonnage nous avons essaye de prendre en compte tout ces facteurs pouvant influencer l'IMC. Comme par exemple les habitudes alimentaires, les activités sportives,...
+
+Dictionnaire de méthadonnées :
+
+https://docs.google.com/document/d/1lgYD39W7vmVYyS5ea0wEl9ArE1dhuDRkIIBzZ4K6d_o/edit
 
 # Résultats
 ## Importation des données et des outils nécessaires
