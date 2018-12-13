@@ -7,6 +7,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Partie sur les graphiques 
+
 ##Importation des données et des outils nécessaires
 ```{r}
 SciViews::R
@@ -20,31 +22,19 @@ library(ggridges)
 
 ```
 
-# Etudes des données
-### Tableau résumé
+## Etudes des données
+
 ```{r}
 rmarkdown::paged_table(biometry)
-biometry1 <- filter (biometry, taille>0, masse >0 , )
+biometry1 <- filter (biometry, taille>0, masse >0)
 biometry_summarise <- summarise(biometry1 ,
   "moyenne taille" = mean(taille), 
   "moyenne masse" = mean(masse))
 knitr::kable(biometry_summarise, digits = 2)
 ```
 
-```{r}
-rmarkdown::paged_table(biometry)
-biometry1 <- filter (biometry, taille>0, masse >0 , )
-biometry_genre <- group_by(biometry1, genre)
-biometry_summarise <- summarise(biometry_genre ,
-  "moyenne taille" = mean(taille), 
-  "moyenne masse" = mean(masse))
-knitr::kable(biometry_summarise, digits = 2)
-```
-Les femmes sont en moyenne plus petites que les hommes et ont logiquement un masse plus petite que les hommes.
+### IMC
 
-## graphiques: comparaison
-###graphiques en fonction du poids par rapport à la taille
-  
 ```{r}
 biometry_IMC <- mutate(biometry, IMC = masse/taille^2)
 biometry2 <- mutate(biometry_IMC, surpoid = IMC >= 25 & IMC < 30, obese = IMC> 30, normal = IMC <25 & IMC >= 18.5 , souspoid = IMC < 18.5)
@@ -62,6 +52,29 @@ chart(data = biometry2, ~ factor(0) %fill=% sequences) +
 ```
 Le pourcentage le plus important est celui de la catégorie "normal". On a ensuite les "surpoids" puis les "obèses" pour terminer par les "sous-poids". La partie la plus faible de la population est le groupe des "sous-poids". Ces pourcentages correspondent bien à la zone d'échantillonage en effet la majorité des individus sont situé dans des régions développés, avec des ressources alimentaires suffisantes.
 
+
+### Différence entre les individus 
+
+#### Les différences lié au genre
+
+```{r}
+rmarkdown::paged_table(biometry)
+biometry1 <- filter (biometry, taille>0, masse >0 , )
+biometry_genre <- group_by(biometry1, genre)
+biometry_summarise <- summarise(biometry_genre ,
+  "moyenne taille" = mean(taille), 
+  "moyenne masse" = mean(masse))
+knitr::kable(biometry_summarise, digits = 2)
+```
+
+```{r}
+chart(data= biometry2, taille ~ masse %col=%genre) +
+  geom_point()
+```
+
+Les femmes sont en moyenne plus petites que les hommes et ont logiquement un masse plus petite que les hommes.
+  
+
 ```{r}
 chart(data = biometry2, ~factor(sequences) %fill=% genre ) +
   geom_bar(position = "dodge")
@@ -69,11 +82,111 @@ chart(data = biometry2, ~factor(sequences) %fill=% genre ) +
 
 Lorsqu'on compare les hommes et les femmes, on remarque que le pourcentage de femmes est plus importante pour la catégorie "normal" et "souspoid". Et le pourcentage d'homme est plus important pour le "surpoid" et "obese".On peut donc constater que les hommes ont un pourcentage de "surpoids" et "obese" plus important que les femmes.
 
+```{r}
+biometry1 <- filter (biometry, tour_poignet >0 )
+biometry_genre <- group_by(biometry1, genre)
+biometry_genre_poignet <- summarise(biometry_genre,
+  "moyenne tour de poignet" = mean(tour_poignet))
+biometry_genre_poignet
+```
+il y a une différence mais bon savoir si cette différence entre homme et femme a comme lien avec l'imc je suis pas convaincu.
+
+#### Les différences lié à l'âge
+
+```{r}
+rmarkdown::paged_table(biometry)
+
+biometry3 <- mutate(biometry2, jeune = age <= 25 , adulte = age > 25 & age <= 60 , agé = age > 60)
+biometry3 <- gather(biometry3,jeune,adulte,agé, key = "tranche_d_age",value = "categorie_age")
+
+biometry3 <- filter (biometry3, categorie_age != FALSE)
+
+biometry_age <- group_by(biometry3, tranche_d_age)
+
+biometry_summarise_age<- summarise(biometry_age ,
+  "moyenne taille" = mean(taille), 
+  "moyenne masse" = mean(masse))
+
+biometry_summarise_age
+```
+On remarque sur ces moyennes que les personnes agés sont en moyenne plus petit mais elles ont un poids un peu près identique a celui des adultes. Les jeunes adultes ont une taille un peu près identique à celle des adultes cependant leur moyenne pour le poids est plus faible. Cela s'explique par le faite que les jeunes viennent de terminer leur croissance et le corps utilse des ressources pour grandir. Par la suite le corps adulte se nourrit pour survivre, il n'avait plus besoin de nourriture supplémentaire pour sa croissance.
+
+```{r}
+chart(data= biometry3, taille ~ masse %col=% tranche_d_age) +
+  geom_point()+ geom_smooth()
+```
+Sur le graphique, ce graphique est trés interessant car grâce à lui on constate que la taille et le poids varie bien en fonction de l'âge. Pour les personnes agés on constate une incohérence dans la ligne tracé. La raison pourrait être celle du faite que notre échantillonnage comporte peu de personnes agés.
+
+```{r}
+chart(data = biometry3, ~factor(sequences) %fill=% tranche_d_age ) +
+  geom_bar(position = "dodge")
+```
+Ce graphique est intéressant. Grace à ce graphe, on remarque que notre échantillonage aléatoire n'est pas parfait en effet il y a une grande quantité de jeune individus et très peu d'individus agés.Il y a même aucun individu agés dans la catégorie sous-poids. 
+Mais si on passe au dessus des erreurs d'échantillonnage les valeurs sont intéressant. Le quantité de jeune en sous-poids et environ égal à celle du surpoids. Pour les sujets adutles c'est une tout autre histoire, il y a presqu'aucun pour les sous-poids et ils sont beaucoup plus nombreux pour les surpoids. En conclusion, ce graphique nous conforte dans nos affrimations dites plus haut: Plus les individus vieillissent plus leur IMC grandit.
+
+### Causes pouvant influencer l'IMC de nos individus.
+
+#### Causes influençant l'augmentation de l'IMC
+
+#####Alcool
+
+```{r}
+biometry_alcoolA <-  filter (biometry2,sequences == "souspoid"  )
+biometry_summaryA <- summarise (biometry_alcoolA, "moyenne de consommation d'alcool" = mean(alcool))
+knitr::kable(biometry_summaryA, digits = 2)
+
+biometry_alcoolB <-  filter (biometry2,sequences == "obese"  )
+biometry_alcoolB <- filter (biometry_alcoolB, alcool != "NA")
+
+biometry_summaryB <- summarise (biometry_alcoolB, "moyenne de consommation d'alcool" = mean(alcool))
+knitr::kable(biometry_summaryB, digits = 2)
+
+biometry_alcoolC <-  filter (biometry2,sequences == "surpoid"  )
+biometry_alcoolC <- filter (biometry_alcoolC, alcool != "NA")
+biometry_summaryC <- summarise (biometry_alcoolC, "moyenne de consommation d'alcool" = mean(alcool))
+knitr::kable(biometry_summaryC, digits = 2)
+
+biometry_alcoolD <-  filter (biometry2,sequences == "normal"  )
+biometry_alcoolD <- filter (biometry_alcoolD, alcool != "NA")
+
+biometry_summaryD <- summarise (biometry_alcoolD, "moyenne de consommation d'alcool" = mean(alcool))
+knitr::kable(biometry_summaryD, digits = 2)
 
 
-_____________________________________________ (encore faire les analyses en dessous de cette ligne)
+```
+On constate que la moyenne d'alcool pour les différents groupes ("souspoids", "normal", "surpoids","obèse") augmente en même temps que le IMC , on peut donc faire une corrélation entre les 2 variables. Ce lien constiste à dire que la consommation d'alcool entraine l'augmentation de l'IMC cependant il faut prendre ces résultats avec précautions car nous avons des valeurs extrèmes qui faussent notre moyenne est l'écart des valeurs réelles de la majorité de la population. 
+
+```{r}
+p=ggplot(biometry2, aes(x= alcool, y= IMC , color= sequences, shape= genre)) + 
+    geom_point(size=1, alpha=0.6)
+
+ggplotly(p)
+```
+
+```{r}
+nbins <- 25
+chart(data = biometry2, ~ alcool %fill=% sequences | sequences) +
+  geom_histogram(data = select(biometry2, -sequences), fill = "grey", bins = nbins) + 
+  geom_histogram(show.legend = FALSE, bins = nbins, na.rm = FALSE) +
+  ylab("Effectifs") +
+  scale_fill_viridis_d()
+chart(data = biometry2, alcool ~ sequences %fill=% sequences) + geom_boxplot(show.legend = FALSE)
+
+```
+Les graphiques nous confirment nos premières analyses . Les individus en sous-poids prennent moins d'alcool que les individus en surpoids.
+On peut également mettre en lien, l'age et l'alcool car on a constaté plus tôt que les individus jeunes sont en général plus en sous-poids que les adultes et les personnes agés. Dans notre catégorie de jeune, il y a des personnes ayant un age inférieur à 16 ans qui est la limite d'autorisation pour l'alcool, les individus plus agé sont plus confronté à l'alcool que les jeunes.
+Attention cependant, beaucoup d'autres facteurs peut interférer.
 
 
+
+
+
+
+
+
+
+
+# Test de graphique
 
 
 ```{r}
@@ -85,14 +198,7 @@ ggplotly(p)
 
 
 ```
-  
-   
-```{r}
-p=ggplot(biometry2, aes(x= alcool, y= IMC , color= sequences, shape= genre)) + 
-    geom_point(size=1, alpha=0.6)
 
-ggplotly(p)
-```
  
 ```{r}
 p=ggplot(biometry2, aes(x= genre, y= IMC , color= sequences, shape= genre)) + 
@@ -140,7 +246,7 @@ ggplotly(p)
 
 
 
-#Lucie qui s'amuse et qui casse tout
+## Lucie qui s'amuse et qui casse tout
 
 
 
