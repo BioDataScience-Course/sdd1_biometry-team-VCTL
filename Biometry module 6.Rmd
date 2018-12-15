@@ -19,6 +19,11 @@ Pour calculer l'IMC, il fait mesurer la masse(en kg) et la diviser par la taille
 
 Le poids et la taille ( donc l'IMC) peut être influencer par toute une multitude de facteurs. Dans notre échantillonnage nous avons essaye de prendre en compte tout ces facteurs pouvant influencer l'IMC. Comme par exemple les habitudes alimentaires, les activités sportives,...
 
+Dictionnaire de méthadonnées :
+
+https://docs.google.com/document/d/1lgYD39W7vmVYyS5ea0wEl9ArE1dhuDRkIIBzZ4K6d_o/edit
+
+
 # Résultats
 ## Importation des données et des outils nécessaires
 
@@ -34,7 +39,6 @@ data(mpg, package="ggplot2")
 library(ggridges)
 
 ```
-__________________________
 
 ## Etudes des données
 ### Tableau résumé : moyenne du poids et moyenne de taille 
@@ -123,6 +127,7 @@ biometry_summarise_age<- summarise(biometry_age ,
 
 biometry_summarise_age
 ```
+
 On remarque sur ces moyennes que les personnes agés sont en moyenne plus petit mais elles ont un poids un peu près identique a celui des adultes. Les jeunes adultes ont une taille un peu près identique à celle des adultes cependant leur moyenne pour le poids est plus faible. Cela s'explique par le faite que les jeunes viennent de terminer leur croissance et le corps utilse des ressources pour grandir. Par la suite le corps adulte se nourrit pour survivre, il n'avait plus besoin de nourriture supplémentaire pour sa croissance.
 
 ```{r}
@@ -197,7 +202,6 @@ Attention cependant, beaucoup d'autres facteurs peut interférer.
 
 
 
-_________________
 
 # Test chi carré
 
@@ -591,11 +595,6 @@ Ici, toutes les différences sont considérées comme significatives sauf  la co
 # Discussion
 
 # Conclusion
-
-
-
-
-
 
 
 

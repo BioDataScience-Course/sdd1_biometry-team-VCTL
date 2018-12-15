@@ -137,5 +137,6 @@ biometry_PD <- summarise (biometry_PD, "normales" = mean(proteine_animale))
 biometry_P <- bind_cols( biometry_PA, biometry_PD, biometry_PC, biometry_PB)
 
 knitr::kable(biometry_P, digits = 2)
-````
+```
+
 
