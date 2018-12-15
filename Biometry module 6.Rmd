@@ -151,26 +151,24 @@ Mais si on passe au dessus des erreurs d'échantillonnage les valeurs sont inté
 
 ```{r}
 biometry_alcoolA <-  filter (biometry2,sequences == "souspoid"  )
-biometry_summaryA <- summarise (biometry_alcoolA, "moyenne de consommation d'alcool" = mean(alcool))
-knitr::kable(biometry_summaryA, digits = 2)
+biometry_alcoolA <- summarise (biometry_alcoolA, " souspoid" = mean(alcool))
 
 biometry_alcoolB <-  filter (biometry2,sequences == "obese"  )
 biometry_alcoolB <- filter (biometry_alcoolB, alcool != "NA")
 
-biometry_summaryB <- summarise (biometry_alcoolB, "moyenne de consommation d'alcool" = mean(alcool))
-knitr::kable(biometry_summaryB, digits = 2)
+biometry_alcoolB <- summarise (biometry_alcoolB, " obèses" = mean(alcool))
 
 biometry_alcoolC <-  filter (biometry2,sequences == "surpoid"  )
 biometry_alcoolC <- filter (biometry_alcoolC, alcool != "NA")
-biometry_summaryC <- summarise (biometry_alcoolC, "moyenne de consommation d'alcool" = mean(alcool))
-knitr::kable(biometry_summaryC, digits = 2)
+biometry_alcoolC <- summarise (biometry_alcoolC, "surpoid" = mean(alcool))
 
 biometry_alcoolD <-  filter (biometry2,sequences == "normal"  )
 biometry_alcoolD <- filter (biometry_alcoolD, alcool != "NA")
 
-biometry_summaryD <- summarise (biometry_alcoolD, "moyenne de consommation d'alcool" = mean(alcool))
-knitr::kable(biometry_summaryD, digits = 2)
+biometry_alcoolD <- summarise (biometry_alcoolD, "normaux" = mean(alcool))
 
+biometry_alcool <- bind_cols( biometry_alcoolA, biometry_alcoolD, biometry_alcoolC, biometry_alcoolB)
+knitr::kable(biometry_alcool, digits = 2)
 
 ```
 On constate que la moyenne d'alcool pour les différents groupes ("souspoids", "normal", "surpoids","obèse") augmente en même temps que le IMC , on peut donc faire une corrélation entre les 2 variables. Ce lien constiste à dire que la consommation d'alcool entraine l'augmentation de l'IMC cependant il faut prendre ces résultats avec précautions car nous avons des valeurs extrèmes qui faussent notre moyenne est l'écart des valeurs réelles de la majorité de la population. 
