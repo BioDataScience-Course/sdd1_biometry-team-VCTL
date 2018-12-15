@@ -138,7 +138,7 @@ Sur le graphique, ce graphique est trés interessant car grâce à lui on consta
 
 ```{r}
 chart(data = biometry3, ~factor(sequences) %fill=% tranche_d_age ) +
-  geom_bar(position = "dodge")
+  geom_bar(position = "dodge") + coord_flip()
 ```
 Ce graphique est intéressant. Grace à ce graphe, on remarque que notre échantillonage aléatoire n'est pas parfait en effet il y a une grande quantité de jeune individus et très peu d'individus agés.Il y a même aucun individu agés dans la catégorie sous-poids. 
 Mais si on passe au dessus des erreurs d'échantillonnage les valeurs sont intéressant. Le quantité de jeune en sous-poids et environ égal à celle du surpoids. Pour les sujets adutles c'est une tout autre histoire, il y a presqu'aucun pour les sous-poids et ils sont beaucoup plus nombreux pour les surpoids. En conclusion, ce graphique nous conforte dans nos affrimations dites plus haut: Plus les individus vieillissent plus leur IMC grandit.
@@ -203,7 +203,15 @@ Attention cependant, beaucoup d'autres facteurs peut interférer.
 
 # Test chi carré
 
-## On peut se demander si la quantitée de personne classé pour un IMC "normal", diffère en fonction de notre appartenance ou non au hainaut.
+## On peut se demander si la quantitée de personne classé pour un IMC "normal", diffère en fonction de notre classe d'age.
+
+
+
+
+##### Graphiques / visualisation:
+
+
+
 ```{r}
 biometry <- mutate(biometry, IMC = masse/taille^2)
 biometry <- mutate(biometry,
@@ -214,21 +222,22 @@ biometry <- mutate(biometry,
     IMC >= 30 ~ "obese"
 ))
 
-chart(biometry, ~ rapport_imc) +
+a <- chart(biometry, ~ rapport_imc) +
   geom_bar()
 
 ## Cutting biometry$age into biometry$age_rec
 biometry$age_rec <- cut(biometry$age, include.lowest=FALSE,  right=TRUE,
                         breaks=c(0, 20, 40, 60, 110))
 
-chart(biometry, ~ age_rec) +
-  geom_bar()
+b <-chart(biometry, ~ age_rec %fill=% age_rec) +
+  geom_bar() + coord_flip()
 
+c <- biometry %>.%
+  filter(., rapport_imc == "normal" ) %>.%
+  chart(., ~ age_rec %fill=% age_rec) +
+  geom_bar() + coord_flip()
 
-biometry %>.%
-  filter(., rapport_imc == "normal") %>.%
-  chart(., ~ age_rec) +
-  geom_bar()
+combine_charts(list (a,b,c))
 
 biometry %>.%
   filter(., rapport_imc == "normal") -> biom_normal
@@ -246,45 +255,32 @@ biometry
 
 
 
-```{r}
-biometry_IMC <- mutate(biometry, IMC = masse/taille^2)
-biometry2 <- mutate(biometry_IMC, imc_class = case_when("anormal" == IMC > 25 & IMC < 18.5 ,"normal" == IMC < 25 & IMC > 18.5)
-
-biometry2$IMC <-as.factor(biometry2$IMC)
-
-skimr::skim(biometry2)
-```
-
-##### Graphiques / visualisation:
 
 
-```{r}
-biometry_IMC <- mutate(biometry, IMC = masse/taille^2)
-biometry2 <- mutate(biometry_IMC, surpoid = IMC >= 25 & IMC < 30, obese = IMC> 30, normal = IMC <25 & IMC >= 18.5 , souspoid = IMC < 18.5)
-
-biometry2 <- gather(biometry2,
-   souspoid, normal, obese, surpoid, key = "sequences", value = "rapport_imc")
-chart(biometry2, ~ hainaut | IMC) + geom_bar()
-```
 
 ##### Test chi carré
 
 voici nos 2 hypothèses:
 
-H0 :la probabilité d avoir un IMC de valeur normal pour la population habitant  en hainaut est la même que pour la population qui n'habite pas en hainaut
+H0 :la probabilité d avoir un IMC de valeur normal pour la population de 20 à 40 ans est la meme que pour la population de 40 à 60 ans
 
-H1 : la probabilité d avoir un IMC de valeur normal pour la population habitant  en hainaut est différente que pour la population qui n'habite pas en hainaut
+H1 : la probabilité d avoir un IMC qualifié de noraml entre ces 2 groupes diffère
 
 ```{r}
-biometry2 %>.%
-  select(.,IMC ,hainaut ) %>.%
-  spread(.,hainaut,key = "batch", value = "sequences")
+biometry %>.%
+group_by(., age_rec , rapport_imc)%>.%
+biometry<- summarise (., n = n() )%>.%
+biometry<- spread(., key = "rapport_imc" , value="n")%>.%
+filter(., rapport_imc == "normal" )%>.%
+filter (., age_rec !="(0,20]" , age_rec !="(60,110]") 
+
+biometry
 ```
 
 
 
 ```{r}
-(chi2. <- chisq.test(biometry2)); cat("Expected frequencies:\n"); chi2.[["expected"]]
+chisq.test(biometry, p = c(1/2, 1/2), rescale.p = FALSE)
 ```
 
 
