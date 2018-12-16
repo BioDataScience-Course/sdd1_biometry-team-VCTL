@@ -45,8 +45,10 @@ library(ggridges)
 
 ```
 
-## Etudes des données
-### Tableau résumé : moyenne du poids et moyenne de taille 
+
+## Tableau comparatif:
+
+### Moyenne du poids et moyenne de taille 
 
 ```{r}
 
@@ -59,8 +61,11 @@ filter (biometry, taille>0, masse >0 , )%>.%
   knitr::kable(., digits = 2)
 
 ```
-### IMC
+## Répartition de l' IMC
 
+ On peut se demander si dans notre population on a autant de personne pour lequels l'IMC est dit : obeses , surpoids , souspoids et pour finir normal.
+ 
+### Visualisations
 ```{r}
  mutate(biometry, IMC = masse_corr/taille^2) %>.%
 mutate(., surpoid = IMC >= 25 & IMC < 30, obese = IMC> 30, normal = IMC <25 & IMC >= 18.5 , souspoid = IMC < 18.5)%>.%
@@ -78,9 +83,82 @@ chart(data = ., ~ factor(0) %fill=% sequences) +
 ```
 Le pourcentage le plus important est celui de la catégorie "normal". On a ensuite les "surpoids" puis les "obèses" pour terminer par les "sous-poids". La partie la plus faible de la population est le groupe des "sous-poids". Ces pourcentages correspondent bien à la zone d'échantillonage en effet la majorité des individus sont situé dans des régions développés, avec des ressources alimentaires suffisantes.
 
-### Différence entre les individus 
+```{r}
 
-#### Les différences lié au genre
+
+a <- chart(biometry, ~ rapport_imc) +
+  geom_bar() + coord_flip()
+
+
+
+b <-chart(biometry, ~ age_rec %fill=% age_rec) +
+  geom_bar() + coord_flip()
+
+c <- biometry %>.%
+  filter(., rapport_imc == "normal" ) %>.%
+  chart(., ~ age_rec %fill=% age_rec) +
+  geom_bar() + coord_flip()
+
+combine_charts(list (a,b,c))
+
+
+
+```
+
+```{r}
+group_by(biometry, age_rec , rapport_imc)%>.%
+summarise (., n = n() )%>.%
+spread(., key = "rapport_imc" , value="n")%>.%
+
+head(.)
+```
+
+###Analyses
+
+les graphiques semblent clair on voit bien que les classes ne sont pas uniformement répartie dans la population avec une prédominance des individus "normaux".Ceci est encore plus appuyé par le test suivant:
+
+
+
+
+
+### Test chi carré
+
+voici nos 2 hypothèses:
+
+H0 :La répartition des 4 groupes d'IMC dans la population est égales.
+
+H1 : La répartition diffère
+
+```{r}
+biometry %>.%
+group_by(.,rapport_imc)%>.%
+summarise (., n = n() )%>.%
+spread(., key = "rapport_imc" , value="n")-> biometry_chi
+
+
+biometry_chi
+```
+
+
+
+```{r}
+chisq.test(biometry_chi, p = c(1/4, 1/4,1/4,1/4), rescale.p = FALSE)
+```
+
+
+##### Analyses
+
+
+Ici le test Chi Carré nous indique un p-value extremement faible de 2.2e-16  la différence est donc très significative 
+
+##### Discussion du test chi carré
+
+Nos groupes d'IMC ne sont pas répartri équitablement dans la population on observe par exemple beaucoup plus d'individus "normaux " et les individus qualifié de " souspoids"sont en très faible effectif.
+
+
+## Différence entre les individus 
+
+### Les différences lié au genre
 
 ```{r}
 
@@ -116,7 +194,7 @@ head(.)
 ```
 il y a une différence mais bon savoir si cette différence entre homme et femme a comme lien avec l'imc je suis pas convaincu.
 
-#### Les différences lié à l'âge
+### Les différences lié à l'âge
 
 ```{r}
 
@@ -144,11 +222,53 @@ chart(data = biometry, ~factor(sequences) %fill=% tranche_d_age ) +
 Ce graphique est intéressant. Grace à ce graphe, on remarque que notre échantillonage aléatoire n'est pas parfait en effet il y a une grande quantité de jeune individus et très peu d'individus agés.Il y a même aucun individu agés dans la catégorie sous-poids. 
 Mais si on passe au dessus des erreurs d'échantillonnage les valeurs sont intéressant. Le quantité de jeune en sous-poids et environ égal à celle du surpoids. Pour les sujets adutles c'est une tout autre histoire, il y a presqu'aucun pour les sous-poids et ils sont beaucoup plus nombreux pour les surpoids. En conclusion, ce graphique nous conforte dans nos affrimations dites plus haut: Plus les individus vieillissent plus leur IMC grandit.
 
-### Causes pouvant influencer l'IMC de nos individus.
+```{r}
+biometry <- mutate(biometry, IMC = masse/taille^2)
+biometry <- mutate(biometry,
+  rapport_imc = case_when(
+    IMC < 18.5 ~ "souspoid",
+    IMC >= 18.5 & IMC < 25 ~ "normal",
+    IMC >= 25 & IMC < 30 ~ "surpoids",
+    IMC >= 30 ~ "obese"
+))
 
-#### Causes influençant l'augmentation de l'IMC
+a <- chart(biometry, ~ rapport_imc) +
+  geom_bar() + coord_flip()
 
-##### Alcool
+## Cutting biometry$age into biometry$age_rec
+biometry$age_rec <- cut(biometry$age, include.lowest=FALSE,  right=TRUE,
+                        breaks=c(0, 20, 40, 60, 110))
+
+b <-chart(biometry, ~ age_rec %fill=% age_rec) +
+  geom_bar() + coord_flip()
+
+c <- biometry %>.%
+  filter(., rapport_imc == "normal" ) %>.%
+  chart(., ~ age_rec %fill=% age_rec) +
+  geom_bar() + coord_flip()
+
+combine_charts(list (a,b,c))
+
+biometry %>.%
+  filter(., rapport_imc == "normal") -> biom_normal
+
+```
+
+```{r}
+biometry<- group_by(biometry, age_rec , rapport_imc)
+biometry<- summarise ( biometry, n = n() )
+biometry<- spread(biometry, key = "rapport_imc" , value="n")
+
+biometry
+```
+
+
+
+## Causes pouvant influencer l'IMC de nos individus.
+
+
+
+### Alcool
 
 ```{r}
 biometry_alcoolA <-  filter (biometry2,sequences == "souspoid"  )
@@ -202,99 +322,17 @@ Attention cependant, beaucoup d'autres facteurs peut interférer.
 
 
 
-# Test chi carré
-
-## On peut se demander si dans notre population on a autant de personne pour lequels l'Imc est obeses , surpoids , souspoids et pour finir norma
-
-
-
-
-##### Graphiques / visualisation:
-
-
-
-```{r}
-biometry <- mutate(biometry, IMC = masse/taille^2)
-biometry <- mutate(biometry,
-  rapport_imc = case_when(
-    IMC < 18.5 ~ "souspoid",
-    IMC >= 18.5 & IMC < 25 ~ "normal",
-    IMC >= 25 & IMC < 30 ~ "surpoids",
-    IMC >= 30 ~ "obese"
-))
-
-a <- chart(biometry, ~ rapport_imc) +
-  geom_bar() + coord_flip()
-
-## Cutting biometry$age into biometry$age_rec
-biometry$age_rec <- cut(biometry$age, include.lowest=FALSE,  right=TRUE,
-                        breaks=c(0, 20, 40, 60, 110))
-
-b <-chart(biometry, ~ age_rec %fill=% age_rec) +
-  geom_bar() + coord_flip()
-
-c <- biometry %>.%
-  filter(., rapport_imc == "normal" ) %>.%
-  chart(., ~ age_rec %fill=% age_rec) +
-  geom_bar() + coord_flip()
-
-combine_charts(list (a,b,c))
-
-biometry %>.%
-  filter(., rapport_imc == "normal") -> biom_normal
-
-```
-
-```{r}
-biometry<- group_by(biometry, age_rec , rapport_imc)
-biometry<- summarise ( biometry, n = n() )
-biometry<- spread(biometry, key = "rapport_imc" , value="n")
-
-biometry
-```
-
-######Analyses
-
-les graphiques semblent clair on voit bien que les classes ne sont pas uniformement répartie dans la population avec une prédominance des individus "normaux".Ceci est encore plus appuyé par le test suivant:
 
 
 
 
 
-##### Test chi carré
-
-voici nos 2 hypothèses:
-
-H0 :La répartition des 4 groupes d'IMC dans la population est égales.
-
-H1 : La répartition diffère
-
-```{r}
-biometry %>.%
-group_by(.,rapport_imc)%>.%
-summarise (., n = n() )%>.%
-spread(., key = "rapport_imc" , value="n")-> biometry_chi
-
-
-biometry_chi
-```
 
 
 
-```{r}
-chisq.test(biometry_chi, p = c(1/4, 1/4,1/4,1/4), rescale.p = FALSE)
-```
 
 
-##### Analyses
 
-
-Ici le test Chi Carré nous indique un p-value extremement faible de 2.2e-16  la différence est donc très significative 
-
-##### Discussion du test chi carré
-
-Nos groupes d'IMC ne sont pas répartri équitablement dans la population on observe par exemple beaucoup plus d'individus "normaux " et les individus qualifié de " souspoids"
- sont en très faible effectif.
 
 
 # Test de student

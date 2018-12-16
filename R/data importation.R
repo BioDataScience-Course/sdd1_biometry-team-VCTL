@@ -12,10 +12,11 @@ biometry$acti_profession <- as.factor(biometry$acti_profession)
 
 biometry <- mutate(biometry, IMC = masse_corr/taille^2) %>.%
   mutate(., surpoid = IMC >= 25 & IMC < 30, obese = IMC> 30, normal = IMC <25 & IMC >= 18.5 , souspoid = IMC < 18.5)%>.%
-gather(.,
-       souspoid, normal, obese, surpoid, key = "sequences", value = "rapport_imc")%>.%
 
-  filter (., rapport_imc != FALSE)
+  gather(.,
+         souspoid, normal, obese, surpoid, key = "sequences", value = "rapport_imc")%>.%
+
+  filter (., rapport_imc != FALSE)%>.%
 
 biometry$age_rec <- cut(biometry$age, include.lowest=FALSE,  right=TRUE,
                         breaks=c(0, 20, 40, 60, 110))
