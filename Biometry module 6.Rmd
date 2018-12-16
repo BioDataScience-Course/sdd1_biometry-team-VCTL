@@ -203,7 +203,7 @@ Attention cependant, beaucoup d'autres facteurs peut interférer.
 
 # Test chi carré
 
-## On peut se demander si la quantitée de personne classé pour un IMC "normal", diffère en fonction de notre classe d'age.
+## On peut se demander si dans notre population on a autant de personne pour lequels l'Imc est obeses , surpoids , souspoids et pour finir norma
 
 
 
@@ -223,7 +223,7 @@ biometry <- mutate(biometry,
 ))
 
 a <- chart(biometry, ~ rapport_imc) +
-  geom_bar()
+  geom_bar() + coord_flip()
 
 ## Cutting biometry$age into biometry$age_rec
 biometry$age_rec <- cut(biometry$age, include.lowest=FALSE,  right=TRUE,
@@ -252,7 +252,9 @@ biometry<- spread(biometry, key = "rapport_imc" , value="n")
 biometry
 ```
 
+######Analyses
 
+les graphiques semblent clair on voit bien que les classes ne sont pas uniformement répartie dans la population avec une prédominance des individus "normaux".Ceci est encore plus appuyé par le test suivant:
 
 
 
@@ -262,32 +264,36 @@ biometry
 
 voici nos 2 hypothèses:
 
-H0 :la probabilité d avoir un IMC de valeur normal pour la population de 20 à 40 ans est la meme que pour la population de 40 à 60 ans
+H0 :La répartition des 4 groupes d'IMC dans la population est égales.
 
-H1 : la probabilité d avoir un IMC qualifié de noraml entre ces 2 groupes diffère
+H1 : La répartition diffère
 
 ```{r}
 biometry %>.%
-group_by(., age_rec , rapport_imc)%>.%
-biometry<- summarise (., n = n() )%>.%
-biometry<- spread(., key = "rapport_imc" , value="n")%>.%
-filter(., rapport_imc == "normal" )%>.%
-filter (., age_rec !="(0,20]" , age_rec !="(60,110]") 
+group_by(.,rapport_imc)%>.%
+summarise (., n = n() )%>.%
+spread(., key = "rapport_imc" , value="n")-> biometry_chi
 
-biometry
+
+biometry_chi
 ```
 
 
 
 ```{r}
-chisq.test(biometry, p = c(1/2, 1/2), rescale.p = FALSE)
+chisq.test(biometry_chi, p = c(1/4, 1/4,1/4,1/4), rescale.p = FALSE)
 ```
 
 
 ##### Analyses
 
 
+Ici le test Chi Carré nous indique un p-value extremement faible de 2.2e-16  la différence est donc très significative 
 
+##### Discussion du test chi carré
+
+Nos groupes d'IMC ne sont pas répartri équitablement dans la population on observe par exemple beaucoup plus d'individus "normaux " et les individus qualifié de " souspoids"
+ sont en très faible effectif.
 
 
 # Test de student
@@ -388,7 +394,7 @@ le quantile correspondant à l'hypothèse H0 (ligne verte)est situé dans la zon
 
 
 
-###### Discussion
+###### Discussion du test de student
 
 On en conclu donc que l hypothèse H1 est correcte et que la moyenne de la masse corrigée dans notre population sera significativement plus importante chez les hommes que chez les femmes.
 
