@@ -334,7 +334,7 @@ Lorsqu'on compare les hommes et les femmes, on remarque que le pourcentage de fe
 #### Répartition du tour de poignet en fonction du genre 
 
 ```{r}
-filter (., tour_poignet >0 )%>.%
+filter (biometry, tour_poignet >0 )%>.%
 group_by(., genre)%>.%
 summarise(.,
   "moyenne tour de poignet" = mean(tour_poignet))%>.%
