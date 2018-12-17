@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 SciViews::R
-biometry <- read("data/biometry.rds")
+biometry <- read("../../data/biometry.rds")
 
 ```
 
@@ -178,6 +178,9 @@ chart(data = biometry2, ~ alcool %fill=% sequences | sequences) +
   geom_histogram(show.legend = FALSE, bins = nbins, na.rm = FALSE) +
   ylab("Effectifs") +
   scale_fill_viridis_d()
+```
+
+```{r}
 chart(data = biometry2, alcool ~ sequences %fill=% sequences) + geom_boxplot(show.legend = FALSE)
 
 ```
@@ -211,8 +214,7 @@ biometry_summaryD3 <- summarise (biometry_grignotageD, "moyenne de consommation 
 knitr::kable(biometry_summaryD3, digits = 2)
 ```
 
-Pour les moyennes du grignotage, le groupe du "souspoids" à la moyenne la plus forte est le groupe "obèse" possède la moyenne la plus faible. Ces résultats sont très intéressant on peut voir un lien entre l'IMC et le grignotage.En moyenne les personnes grignotant beaucoup ont un poids plus faible.
-L'idée populaire est que grignoter entraine le surpoids mais notre analyse statistique nous prouvent le contraire. En effet comme l'individu absorbe de petite quantité tout au long de la journée, il prends donc une moins grande quantité de nourriture pendant les grands repas ce qui explique l'IMC plus faible. Il faut cependant prendre ces résultats avec des pincettes car nous avons pas déterminer le type de grignotage : fruits ou friandises.
+Pour les moyennes du grignotage, le groupe du "souspoids" à la moyenne la plus forte est le groupe "obèse" possède la moyenne la plus faible. Ces résultats sont très intéressant on peut voir un lien entre l'IMC et le grignotage.En moyenne les personnes grignotant beaucoup ont un poids plus faible.Cependant les différences entre les moyennes sont relativement faible et il faut faire attention aux valeurs extrèmes qui peuvent influencé la moyenne. Il faut prendre ces résultats avec des pincettes car nous avons pas déterminer le type de grignotage : fruits ou friandises.
 
 ```{r}
 p=ggplot(biometry2, aes(x= grignotage, y= IMC , color= sequences, shape= genre)) + 
@@ -220,10 +222,28 @@ p=ggplot(biometry2, aes(x= grignotage, y= IMC , color= sequences, shape= genre))
 
 ggplotly(p)
 ```
+```{r}
+nbins <- 25
+chart(data = biometry2, ~ grignotage %fill=% sequences | sequences) +
+  geom_histogram(data = select(biometry2, -sequences), fill = "grey", bins = nbins) + 
+  geom_histogram(show.legend = FALSE, bins = nbins, na.rm = FALSE) +
+  ylab("Effectifs") +
+  scale_fill_viridis_d()
+```
 
 
+```{r}
+give_n <- function(x)
+  c(y = max(x) * 1.1, label = length(x)) 
+chart(data = biometry2, grignotage ~ sequences %fill=% sequences) + geom_boxplot(show.legend = FALSE)+ stat_summary(fun.data = give_n, geom = "text", hjust = 0.5)
+
+```
+
+Sur les graphiques, on constate qu'il n'y a pas de différences significatives entre les individus
+Les moyennes étaient légèrement différentes à cause des valeurs extrèmes. 
 
 ##### Protéine animale
+
 ```{r}
 biometry_PA <-  filter (biometry2,sequences == "souspoid"  )
 biometry_PA <- filter (biometry_PA, proteine_animale != "NA")
@@ -245,10 +265,31 @@ biometry_PD <- filter (biometry_PD, proteine_animale != "NA")
 biometry_summaryD4 <- summarise (biometry_PD, "moyenne de consommation de proteine animale" = mean(proteine_animale))
 knitr::kable(biometry_summaryD4, digits = 2)
 ```
-Le groupe des "souspoids" possède la moyenne la plus faible et le groupe"obèse" possède la moyenne la plus grande. On peut conclure que les protéines animals ont une influence avec la prise de poids. Pour la catégorie "normal"et"surpoids"les valeurs sont assez proche. Il doit y avoir un autre facteur qui doit influencé l'IMC.
 
+Le groupe des "souspoids" possède la moyenne la plus faible et le groupe"obèse" possède la moyenne la plus grande. On peut conclure que les protéines animales ont une influence avec la prise de poids. Pour la catégorie "normal"et"surpoids"les valeurs sont assez proche. Il doit y avoir un autre facteur qui doit influencé l'IMC.
+
+```{r}
+nbins <- 25
+chart(data = biometry2, ~ proteine_animale %fill=% sequences | sequences) +
+  geom_histogram(data = select(biometry2, -sequences), fill = "grey", bins = nbins) + 
+  geom_histogram(show.legend = FALSE, bins = nbins, na.rm = FALSE) +
+  ylab("Effectifs") +
+  scale_fill_viridis_d()
+
+```
+
+
+```{r}
+give_n <- function(x)
+  c(y = max(x) * 1.1, label = length(x)) 
+chart(data = biometry2, proteine_animale ~ sequences %fill=% sequences) + geom_boxplot(show.legend = FALSE)+ stat_summary(fun.data = give_n, geom = "text", hjust = 0.5)
+
+```
+
+Le graphique nous révèle que les personnes en sous-poids prennent une quantité moins importante de viande. Pour le groupe "obèse", ce sont les valeurs extrèmes qui ont influencé la moyenne. Le manque de protéine animal entraine le sous-poids. Mais la surconsommation de protéine animal ne nous indique pas clairement qu'il entraine une augmentation de l'IMC.
 
 ##### Fastfood
+
 ```{r}
 biometry_fastfoodA <-  filter (biometry2,sequences == "souspoid"  )
 biometry_fasfoodA <- filter (biometry_fastfoodA, fastfood != "NA")
@@ -272,13 +313,114 @@ biometry_summaryD2 <- summarise (biometry_fastfoodD, "moyenne de consommation de
 knitr::kable(biometry_summaryD2, digits = 2)
 
 ```
-Ici les moyennes donnent des conclusions moins significatives. On remarque que la moyenne la plus faible est attribuée à la catégorie du "souspoids", cependant la moyenne la plus forte est celle du groupe normal.Dans les groupes "souspoids","surpoids" et "obèse" on a une augmentation lié à la montée du IMC. Le groupe"normal" ne suit pas notre hypothèse, les différentes raisons sont que soit les fastfood n'ont pas de lien avec la prise de point ou soit nous avons oublié de tenir compte d'une autre variable pouvant influencer sur l'IMC ( 2 hypothèse est la bonne car la catégorie "normale" est le groupe fesant le plus de sport , il faut fairedonc tout suite après un graphique sur le sport )
+
+Ici les moyennes donnent des conclusions moins significatives. On remarque que la moyenne la plus faible est attribuée à la catégorie du "souspoids", cependant la moyenne la plus forte est celle du groupe normal.Dans les groupes "souspoids","surpoids" et "obèse" on a une augmentation lié à la montée du IMC. Le groupe"normal" ne suit pas notre hypothèse, les différentes raisons sont que soit les fastfood n'ont pas de lien avec la prise de point ou soit nous avons oublié de tenir compte d'une autre variable pouvant influencer sur l'IMC ( 2 hypothèse est la bonne car la catégorie "normale" est le groupe fesant le plus de sport , il faut faire donc tout suite après un graphique sur le sport )
+
+```{r}
+nbins <- 25
+chart(data = biometry2, ~ fastfood %fill=% sequences | sequences) +
+  geom_histogram(data = select(biometry2, -sequences), fill = "grey", bins = nbins) + 
+  geom_histogram(show.legend = FALSE, bins = nbins, na.rm = FALSE) +
+  ylab("Effectifs") +
+  scale_fill_viridis_d()
+
+```
+
+
+```{r}
+give_n <- function(x)
+  c(y = max(x) * 1.1, label = length(x)) 
+chart(data = biometry2, fastfood ~ sequences %fill=% sequences) + geom_boxplot(show.legend = FALSE)+ stat_summary(fun.data = give_n, geom = "text", hjust = 0.5)
+
+```
+
+On peut remarquer que le groupe sous-poids mange moins de fastfood.Le faite de manger plus souvent amène donc à un IMC plus important. Cependant pour les autres groupes il n'y a pas de différences significatives. Il doit y avoir un autre facteur qui influence les 3 groupes. Surtout pour le groupe normal qui en général mange environ une même quantité de fastfood que le groupe obèse. 
 
 #### Causes influençant la diminution de l'IMC
 
 ##### Activités physique
 
+```{r}
+biometry_SA <-  filter (biometry2,sequences == "souspoid"  )
+biometry_SA <- filter (biometry_SA, acti_physique != "NA")
+biometry_SA <- summarise (biometry_SA, "souspoid" = mean(acti_physique))
+
+biometry_SB <-  filter (biometry2,sequences == "obese"  )
+biometry_SB <- filter (biometry_SB, acti_physique != "NA")
+biometry_SB <- summarise (biometry_SB, "obèses" = mean(acti_physique))
+
+biometry_SC <-  filter (biometry2,sequences == "surpoid"  )
+biometry_SC <- filter (biometry_SC, acti_physique != "NA")
+biometry_SC <- summarise (biometry_SC, "surpoid" = mean(acti_physique))
+
+biometry_SD <-  filter (biometry2,sequences == "normal"  )
+biometry_SD <- filter (biometry_SD, acti_physique != "NA")
+biometry_SD <- summarise (biometry_SD, "normales" = mean(acti_physique))
+
+biometry_S <- bind_cols( biometry_SA, biometry_SD, biometry_SC, biometry_SB)
+
+knitr::kable(biometry_S, digits = 2)
+```
+
+Les individus fesant le plus de sport sont ceux avec l'IMC le plus faible. On peut en conclure que le sport diminue l'IMC des individus. Cependant on peut remarqué que le groupe fesant le plus de sport est le groupe normal et non le groupe sous-poids. 
+La raison de cette variation inattendu sont les autres facteurs influençant l'IMC.Le groupe "normal" fait plus de sport mais il mange également plus de fastfood.  
+
+```{r}
+nbins <- 25
+chart(data = biometry2, ~ acti_physique %fill=% sequences | sequences) +
+  geom_histogram(data = select(biometry2, -sequences), fill = "grey", bins = nbins) + 
+  geom_histogram(show.legend = FALSE, bins = nbins, na.rm = FALSE) +
+  ylab("Effectifs") +
+  scale_fill_viridis_d()
+
+```
+
+```{r}
+give_n <- function(x)
+  c(y = max(x) * 1.1, label = length(x)) 
+chart(data = biometry2, acti_physique ~ sequences %fill=% sequences) + geom_boxplot(show.legend = FALSE)+ stat_summary(fun.data = give_n, geom = "text", hjust = 0.5)
+
+```
+Les graphiques nous montrent bien que les 2 groupes les plus fins sont les groupes fesant le plus de sports. Le sport influence la diminution de l'IMC
+
+
 ##### Activités professionnels
+
+```{r}
+a <- filter(biometry2, sequences == "souspoid")%>.%
+  chart(., ~ factor(0) %fill=% acti_profession) +
+  geom_bar(width = 1) + 
+  coord_polar("y", start = 0) +
+  theme_void() +
+  scale_fill_viridis_d()
+
+b <- filter(biometry2, sequences == "normal")%>.%
+  chart(., ~ factor(0) %fill=% acti_profession) +
+  geom_bar(width = 1) + 
+  coord_polar("y", start = 0) +
+  theme_void() +
+  scale_fill_viridis_d()
+
+c <- filter(biometry2, sequences == "surpoid")%>.%
+  chart(., ~ factor(0) %fill=% acti_profession) +
+  geom_bar(width = 1) + 
+  coord_polar("y", start = 0) +
+  theme_void() +
+  scale_fill_viridis_d()
+
+d <- filter(biometry2, sequences == "souspoid")%>.%
+  chart(., ~ factor(0) %fill=% acti_profession) +
+  geom_bar(width = 1) + 
+  coord_polar("y", start = 0) +
+  theme_void() +
+  scale_fill_viridis_d()
+
+combine_charts(list(a, b, c, d), common.legend = TRUE, labels = c("sous-poids", "normal", "surpoids", "obèse"))
+
+```
+
+On ne peut pas tirer de conclusions pouvant influencer l'IMC, les autres facteurs mesurés semble avoir plus d'importance que l'activité professionel. Les raisons de se méfier des valeurs sont que les groupes obèse et le groupe sous-poids ont environ les mêmes proportions alors que l'IMC est très différents entre les 2. 
+Les raisons de ces incohérences pourrez être dû aux autres valeurs, les individus ayant une vie sédentaire vont la compenser en fesant plus de sport, ....
 
 ### Conséquences de l'augmentation de l'IMC
 

@@ -34,7 +34,7 @@ SciViews::R
 
 # ! SI UNE COPIE LOCALE N'A PAS ENCORE ETE TELECHARGEE IL EST ESSENTIEL D'AVANT TOUT RUN TOUT LE R SCRIPT NOMME : DATA IMPORTATION.R !
 
-biometry <- read("data/biometry.rds")
+biometry <- read("../data/biometry.rds")
 
 head(biometry)
  
@@ -498,7 +498,7 @@ Ici, toutes les différences sont considérées comme significatives sauf  la co
 chart(data= biometry, taille ~ masse %col=% age_rec) +
   geom_point()+ geom_smooth(se= FALSE)
 ```
-Sur le graphique, ce graphique est trés interessant car grâce à lui on constate que la taille et le poids varie bien en fonction de l'âge. Pour les personnes agés on constate une incohérence dans la ligne tracé. La raison pourrait être celle du faite que notre échantillonnage comporte peu de personnes agés.
+Sur le graphique, ce graphique est trés interessant car grâce à lui on constate que la taille et le poids varie bien en fonction de l'âge.La courbe des plus âgés ne dépasse jamais la courbe des plus jeunes.
 
 #### Répartition de l'IMC  en fonction des catégories d'age.
 
@@ -506,8 +506,8 @@ Sur le graphique, ce graphique est trés interessant car grâce à lui on consta
 chart(data = biometry, ~factor(sequences) %fill=% age_rec ) +
   geom_bar(position = "dodge") + coord_flip()
 ```
-Ce graphique est intéressant. Grace à ce graphe, on remarque que notre échantillonage aléatoire n'est pas parfait en effet il y a une grande quantité de jeune individus et très peu d'individus agés.Il y a même aucun individu agés dans la catégorie sous-poids. 
-Mais si on passe au dessus des erreurs d'échantillonnage les valeurs sont intéressant. Le quantité de jeune en sous-poids et environ égal à celle du surpoids. Pour les sujets adutles c'est une tout autre histoire, il y a presqu'aucun pour les sous-poids et ils sont beaucoup plus nombreux pour les surpoids. En conclusion, ce graphique nous conforte dans nos affrimations dites plus haut: Plus les individus vieillissent plus leur IMC grandit.
+Ce graphique est intéressant. Grâce à ce graphe, on remarque que notre échantillonage aléatoire n'est pas parfait en effet il y a une grande quantité de jeune individus et très peu d'individus plus agés. 
+Mais si on passe au dessus des erreurs d'échantillonnage, les valeurs sont intéressant.Pour le groupe sous-poids, nous n'avons pas d'individus au delà de 40 ans.Pour la catégorie normal on remarque que la quantité d'individus varie en fonction de l'âge.Le pourcentage de personne dépassant les 40 ans dans le groupe surpoids et obèses est beaucoup plus important que dans le groupe de souspoids qui est égale à 0 et le groupe normal. En conclusion, ce graphique nous conforte dans nos affrimations dites plus haut: Plus les individus vieillissent plus leur IMC grandit.
 
 ```{r}
 
