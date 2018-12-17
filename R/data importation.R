@@ -22,11 +22,6 @@ biometry$age_rec <- cut(biometry$age, include.lowest=FALSE,  right=TRUE,
                         breaks=c(0, 20, 40, 60, 110))
 
 
-biometry <- mutate(biometry, jeune = age <= 25 , adulte = age > 25 & age <= 60 , agé = age > 60)%>.%
-gather(.,jeune,adulte,agé, key = "tranche_d_age",value = "categorie_age")%>.%
-filter (., categorie_age != FALSE)
-
-
 visdat::vis_dat(biometry)
 head(biometry)
 

@@ -1,7 +1,7 @@
 ---
 title: "Biometry module 6"
 output: 
-  html_document: 
+  html_notebook: 
     toc: yes
 ---
 
@@ -348,7 +348,7 @@ il y a une différence mais bon savoir si cette différence entre homme et femme
 
 ```{r}
 
-group_by(biometry, categorie_age)%>.%
+group_by(biometry, age_rec)%>.%
 
 summarise(.,
   "moyenne taille" = mean(taille), 
@@ -495,7 +495,7 @@ Ici, toutes les différences sont considérées comme significatives sauf  la co
 #### Etude de la relation masse <-> taille en fonction de la catégorie d'âge.
 
 ```{r}
-chart(data= biometry, taille ~ masse %col=% tranche_d_age) +
+chart(data= biometry, taille ~ masse %col=% age_rec) +
   geom_point()+ geom_smooth(se= FALSE)
 ```
 Sur le graphique, ce graphique est trés interessant car grâce à lui on constate que la taille et le poids varie bien en fonction de l'âge. Pour les personnes agés on constate une incohérence dans la ligne tracé. La raison pourrait être celle du faite que notre échantillonnage comporte peu de personnes agés.
@@ -503,7 +503,7 @@ Sur le graphique, ce graphique est trés interessant car grâce à lui on consta
 #### Répartition de l'IMC  en fonction des catégories d'age.
 
 ```{r}
-chart(data = biometry, ~factor(sequences) %fill=% tranche_d_age ) +
+chart(data = biometry, ~factor(sequences) %fill=% age_rec ) +
   geom_bar(position = "dodge") + coord_flip()
 ```
 Ce graphique est intéressant. Grace à ce graphe, on remarque que notre échantillonage aléatoire n'est pas parfait en effet il y a une grande quantité de jeune individus et très peu d'individus agés.Il y a même aucun individu agés dans la catégorie sous-poids. 
