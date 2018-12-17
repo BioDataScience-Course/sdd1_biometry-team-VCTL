@@ -34,7 +34,7 @@ SciViews::R
 
 # ! SI UNE COPIE LOCALE N'A PAS ENCORE ETE TELECHARGEE IL EST ESSENTIEL D'AVANT TOUT RUN TOUT LE R SCRIPT NOMME : DATA IMPORTATION.R !
 
-biometry <- read("data/biometry.rds")
+biometry <- read("../data/biometry.rds")
 
 head(biometry)
  
@@ -71,10 +71,8 @@ filter (biometry, taille>0, masse >0 , )%>.%
 ```{r}
 
 
-chart(data = biometry, ~ factor(0) %fill=% sequences) +
-  geom_bar(width = 1) + 
-  coord_polar("y", start = 0) +
-  theme_void() +
+chart(data = biometry, ~ IMC_RAP %fill=%IMC_RAP) +
+  geom_bar(width = 1) +
   scale_fill_viridis_d()
 ```
 Le pourcentage le plus important est celui de la catégorie "normal". On a ensuite les "surpoids" puis les "obèses" pour terminer par les "sous-poids". La partie la plus faible de la population est le groupe des "sous-poids". Ces pourcentages correspondent bien à la zone d'échantillonage en effet la majorité des individus sont situé dans des régions développés, avec des ressources alimentaires suffisantes.
@@ -82,7 +80,7 @@ Le pourcentage le plus important est celui de la catégorie "normal". On a ensui
 ```{r}
 
 
-a <- chart(biometry, ~ rapport_imc) +
+a <- chart(biometry, ~ IMC_RAP) +
   geom_bar() + coord_flip()
 
 
@@ -91,7 +89,7 @@ b <-chart(biometry, ~ age_rec %fill=% age_rec) +
   geom_bar() + coord_flip()
 
 c <- biometry %>.%
-  filter(., rapport_imc == "normal" ) %>.%
+  filter(., IMC_RAP == "normal" ) %>.%
   chart(., ~ age_rec %fill=% age_rec) +
   geom_bar() + coord_flip()
 
