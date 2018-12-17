@@ -1,6 +1,8 @@
 ---
 title: "Biometry module 6"
-output: html_document
+output: 
+  html_document: 
+    toc: yes
 ---
 
 # Introduction
@@ -67,15 +69,9 @@ filter (biometry, taille>0, masse >0 , )%>.%
  
 ### Visualisations
 ```{r}
- mutate(biometry, IMC = masse_corr/taille^2) %>.%
-mutate(., surpoid = IMC >= 25 & IMC < 30, obese = IMC> 30, normal = IMC <25 & IMC >= 18.5 , souspoid = IMC < 18.5)%>.%
 
-gather(.,
-   souspoid, normal, obese, surpoid, key = "sequences", value = "rapport_imc")%>.%
 
-filter (., rapport_imc != FALSE)%>.%
-
-chart(data = ., ~ factor(0) %fill=% sequences) +
+chart(data = biometry, ~ factor(0) %fill=% sequences) +
   geom_bar(width = 1) + 
   coord_polar("y", start = 0) +
   theme_void() +
@@ -146,198 +142,23 @@ chisq.test(biometry_chi, p = c(1/4, 1/4,1/4,1/4), rescale.p = FALSE)
 ```
 
 
-##### Analyses
+### Analyses
 
 
 Ici le test Chi Carré nous indique un p-value extremement faible de 2.2e-16  la différence est donc très significative 
 
-##### Discussion du test chi carré
+### Discussion du test chi carré
 
 Nos groupes d'IMC ne sont pas répartri équitablement dans la population on observe par exemple beaucoup plus d'individus "normaux " et les individus qualifié de " souspoids"sont en très faible effectif.
 
 
 ## Différence entre les individus 
 
-### Les différences lié au genre
+### Les différences liées au genre
 
-```{r}
+#### Répartition de la masse en fonction du genre
 
-filter (biometry, taille>0, masse >0 , ) %>.%
-group_by(., genre)%>.%
-summarise(.,
-  "moyenne taille" = mean(taille), 
-  "moyenne masse" = mean(masse))%>.%
-knitr::kable(., digits = 2)
-```
-
-```{r}
-chart(data= biometry, taille ~ masse %col=%genre) +
-  geom_point()
-```
-
-Les femmes sont en moyenne plus petites que les hommes et ont logiquement un masse plus petite que les hommes.
-  
-
-```{r}
-chart(data = biometry, ~factor(sequences) %fill=% genre ) +
-  geom_bar(position = "dodge")
-```
-
-Lorsqu'on compare les hommes et les femmes, on remarque que le pourcentage de femmes est plus importante pour la catégorie "normal" et "souspoid". Et le pourcentage d'homme est plus important pour le "surpoid" et "obese".On peut donc constater que les hommes ont un pourcentage de "surpoids" et "obese" plus important que les femmes.
-
-```{r}
-filter (., tour_poignet >0 )%>.%
-group_by(., genre)%>.%
-summarise(.,
-  "moyenne tour de poignet" = mean(tour_poignet))%>.%
-head(.)
-```
-il y a une différence mais bon savoir si cette différence entre homme et femme a comme lien avec l'imc je suis pas convaincu.
-
-### Les différences lié à l'âge
-
-```{r}
-
-group_by(biometry, categorie_age)%>.%
-
-summarise(.,
-  "moyenne taille" = mean(taille), 
-  "moyenne masse" = mean(masse))%>.%
-
-head(.)
-```
-
-On remarque sur ces moyennes que les personnes agés sont en moyenne plus petit mais elles ont un poids un peu près identique a celui des adultes. Les jeunes adultes ont une taille un peu près identique à celle des adultes cependant leur moyenne pour le poids est plus faible. Cela s'explique par le faite que les jeunes viennent de terminer leur croissance et le corps utilse des ressources pour grandir. Par la suite le corps adulte se nourrit pour survivre, il n'avait plus besoin de nourriture supplémentaire pour sa croissance.
-
-```{r}
-chart(data= biometry, taille ~ masse %col=% tranche_d_age) +
-  geom_point()+ geom_smooth(se= FALSE)
-```
-Sur le graphique, ce graphique est trés interessant car grâce à lui on constate que la taille et le poids varie bien en fonction de l'âge. Pour les personnes agés on constate une incohérence dans la ligne tracé. La raison pourrait être celle du faite que notre échantillonnage comporte peu de personnes agés.
-
-```{r}
-chart(data = biometry, ~factor(sequences) %fill=% tranche_d_age ) +
-  geom_bar(position = "dodge") + coord_flip()
-```
-Ce graphique est intéressant. Grace à ce graphe, on remarque que notre échantillonage aléatoire n'est pas parfait en effet il y a une grande quantité de jeune individus et très peu d'individus agés.Il y a même aucun individu agés dans la catégorie sous-poids. 
-Mais si on passe au dessus des erreurs d'échantillonnage les valeurs sont intéressant. Le quantité de jeune en sous-poids et environ égal à celle du surpoids. Pour les sujets adutles c'est une tout autre histoire, il y a presqu'aucun pour les sous-poids et ils sont beaucoup plus nombreux pour les surpoids. En conclusion, ce graphique nous conforte dans nos affrimations dites plus haut: Plus les individus vieillissent plus leur IMC grandit.
-
-```{r}
-biometry <- mutate(biometry, IMC = masse/taille^2)
-biometry <- mutate(biometry,
-  rapport_imc = case_when(
-    IMC < 18.5 ~ "souspoid",
-    IMC >= 18.5 & IMC < 25 ~ "normal",
-    IMC >= 25 & IMC < 30 ~ "surpoids",
-    IMC >= 30 ~ "obese"
-))
-
-a <- chart(biometry, ~ rapport_imc) +
-  geom_bar() + coord_flip()
-
-## Cutting biometry$age into biometry$age_rec
-biometry$age_rec <- cut(biometry$age, include.lowest=FALSE,  right=TRUE,
-                        breaks=c(0, 20, 40, 60, 110))
-
-b <-chart(biometry, ~ age_rec %fill=% age_rec) +
-  geom_bar() + coord_flip()
-
-c <- biometry %>.%
-  filter(., rapport_imc == "normal" ) %>.%
-  chart(., ~ age_rec %fill=% age_rec) +
-  geom_bar() + coord_flip()
-
-combine_charts(list (a,b,c))
-
-biometry %>.%
-  filter(., rapport_imc == "normal") -> biom_normal
-
-```
-
-```{r}
-biometry<- group_by(biometry, age_rec , rapport_imc)
-biometry<- summarise ( biometry, n = n() )
-biometry<- spread(biometry, key = "rapport_imc" , value="n")
-
-biometry
-```
-
-
-
-## Causes pouvant influencer l'IMC de nos individus.
-
-
-
-### Alcool
-
-```{r}
-biometry_alcoolA <-  filter (biometry2,sequences == "souspoid"  )
-biometry_alcoolA <- summarise (biometry_alcoolA, " souspoid" = mean(alcool))
-
-biometry_alcoolB <-  filter (biometry2,sequences == "obese"  )
-biometry_alcoolB <- filter (biometry_alcoolB, alcool != "NA")
-
-biometry_alcoolB <- summarise (biometry_alcoolB, " obèses" = mean(alcool))
-
-biometry_alcoolC <-  filter (biometry2,sequences == "surpoid"  )
-biometry_alcoolC <- filter (biometry_alcoolC, alcool != "NA")
-biometry_alcoolC <- summarise (biometry_alcoolC, "surpoid" = mean(alcool))
-
-biometry_alcoolD <-  filter (biometry2,sequences == "normal"  )
-biometry_alcoolD <- filter (biometry_alcoolD, alcool != "NA")
-
-biometry_alcoolD <- summarise (biometry_alcoolD, "normaux" = mean(alcool))
-
-biometry_alcool <- bind_cols( biometry_alcoolA, biometry_alcoolD, biometry_alcoolC, biometry_alcoolB)
-knitr::kable(biometry_alcool, digits = 2)
-
-```
-On constate que la moyenne d'alcool pour les différents groupes ("souspoids", "normal", "surpoids","obèse") augmente en même temps que le IMC , on peut donc faire une corrélation entre les 2 variables. Ce lien constiste à dire que la consommation d'alcool entraine l'augmentation de l'IMC cependant il faut prendre ces résultats avec précautions car nous avons des valeurs extrèmes qui faussent notre moyenne est l'écart des valeurs réelles de la majorité de la population. 
-
-```{r}
-p=ggplot(biometry, aes(x= alcool, y= IMC , color= sequences, shape= genre)) + 
-    geom_point(size=1, alpha=0.6)
-
-ggplotly(p)
-```
-
-```{r}
-
-chart(data = biometry, ~ alcool %fill=% sequences | sequences) +
-  geom_histogram(data = select(biometry2, -sequences), fill = "grey", bins = 25) + 
-  geom_histogram(show.legend = FALSE, bins = 25, na.rm = FALSE) +
-  ylab("Effectifs") +
-  scale_fill_viridis_d()
-chart(data = biometry, alcool ~ sequences %fill=% sequences) + geom_boxplot(show.legend = FALSE)
-
-```
-Les graphiques nous confirment nos premières analyses . Les individus en sous-poids prennent moins d'alcool que les individus en surpoids.
-On peut également mettre en lien, l'age et l'alcool car on a constaté plus tôt que les individus jeunes sont en général plus en sous-poids que les adultes et les personnes agés. Dans notre catégorie de jeune, il y a des personnes ayant un age inférieur à 16 ans qui est la limite d'autorisation pour l'alcool, les individus plus agé sont plus confronté à l'alcool que les jeunes.
-Attention cependant, beaucoup d'autres facteurs peut interférer.
-
-
-
-........
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Test de student
-
-## Est ce que la masse corrigée des personnes est identique dans la population selon le genre ou es ce que l'un des genres est en moyenne plus lourd que l autre ?:
+Est ce que la masse corrigée des personnes est identique dans la population selon le genre ou es ce que l'un des genres est en moyenne plus lourd que l autre ?:
 
 observons ceci tout d'abord par une représentation graphique pour avoir une idée.
 
@@ -365,28 +186,24 @@ H1:la différence des moyennes entre mesures pour les femmes et pour les hommes�
 
 
 
-
-
 test de student :
 
 ```{r}
 t.test(data = biometry, masse_corr ~ genre,
   alternative = "two.sided", conf.level = 0.95, var.equal = TRUE)
 ```
-###### Analyses 
-
-
+##### Analyses 
 
 
 Prenons une valeur de α de 5% , (α = 0.05).On compare notre valeur de α avec notre valeur de p qui est de: p-value=5.601e-09.
 
 comme p <<<< α on rejette Ho qui se situe dans la zone de rejet.
 
-###### Representation graphique des distributions:
+##### Representation graphique des distributions:
 
 
 ```{r}
-biometry<-filter(biometry, genre !="NA",masse_corr !="NA")
+filter(biometry, genre !="NA",masse_corr !="NA")
 
 biometry %>.%
 group_by(.,genre) %>.%
@@ -433,18 +250,39 @@ le quantile correspondant à l'hypothèse H0 (ligne verte)est situé dans la zon
 
 
 
-###### Discussion du test de student
+##### Discussion du test de student
 
 On en conclu donc que l hypothèse H1 est correcte et que la moyenne de la masse corrigée dans notre population sera significativement plus importante chez les hommes que chez les femmes.
 
-# Test de Wilcoxon
-
-## On peut maintenant se demander si la taille des personnes est identique dans la population selon le genre ou es ce que l'un des genres est en moyenne plus grand que l autre ?:
 
 
-Dans le test de student nous avons supposé que la distribution de départ était de type normal.Or lorsqu'on a un faible échantillonage on peut douter que la distribution suis bien une loi normale on va donc utiliser un autre test celui de Test de Wilcoxon-Mahn-Withney une version non-paramétrique du test de student.
 
-##### Graphique
+
+#### Répartition de la taille en fonction du genre
+
+On peut maintenant se demander si la taille des personnes est identique dans la population selon le genre ou es ce que l'un des genres est en moyenne plus grand que l autre ?:
+
+##### Visualisations :
+
+
+```{r}
+
+filter (biometry, taille>0, masse >0 , ) %>.%
+group_by(., genre)%>.%
+summarise(.,
+  "moyenne taille" = mean(taille), 
+  "moyenne masse" = mean(masse))%>.%
+knitr::kable(., digits = 2)
+```
+
+```{r}
+chart(data= biometry, taille ~ masse %col=%genre) +
+  geom_point()
+```
+
+Analyses:
+
+Les femmes sont en moyenne plus petites que les hommes et ont logiquement un masse plus petite que les hommes.
 
 ```{r}
 biometry<-filter(biometry, genre !="NA")
@@ -454,57 +292,77 @@ give_n <- function(x)
 
 chart(data = biometry, taille ~ genre %fill=% genre) +
   geom_boxplot(na.rm = TRUE) + stat_summary(fun.data = give_n, geom = "text", hjust = 0.5)
+
 ```
 
-##### Analyses
+Analyses:
 
 Sur le graphique, il semble que les hommes (sex == "h") tendent à avoir une taille plus grande (variable taille) que les femmes (sex == "f"), mais cette différence est-elle significative ou peut-elle être juste liée au hasard de l’échantillonnage ? Pour y répondre, nous devons élaborer un Test de Wilcoxon-Mahn-Withney qui va confronter les hypothèses suivantes (en se basant sur les médianes) :
 
+##### Test de Wilcoxon
 
+Dans le test de student nous avons supposé que la distribution de départ était de type normal.Or lorsqu'on a un faible échantillonage on peut douter que la distribution suis bien une loi normale on va donc utiliser un autre test celui de Test de Wilcoxon-Mahn-Withney une version non-paramétrique du test de student.
 
 voici nos 2 hypothèses:
 
 H0:P(taillef>tailleh)=P(taillef<tailleh)
 H1:P(taillef>tailleh)≠P(taillef<tailleh)
 
-###### Test de Wilcoxon-Mahn-Withney:
-
-
 ```{r}
 wilcox.test(data = biometry, taille ~ genre,
   alternative = "less", conf.level = 0.95)
 ```
 
-###### Analyses 
+##### Analyses 
 
 Prenons une valeur de α de 5% , (α = 0.05).On compare notre valeur de α avec notre valeur de p qui est de: p-value=2.2e-16.
 
 comme p <<<< α on rejette Ho qui se situe dans la zone de rejet.
 
 
-##### Discussion
+##### Discussion du test de wilcoxon
 
 On en conclu donc que l hypothèse H1 est correcte et que la moyenne de la taille dans notre population sera significativement plus importante chez les hommes que chez les femmes.
 
-
-
-# Test de Kruskal-Wallis/modèle de l'ANOVA:
-
-Imaginons que nous voulons comparer la masse corrigée des individus en fonction de leur age (on formera une variable facteur en formant des groupes d'ages(plus de deux)), on ne peut plus utiliser le test de student ou de wilcoxon car un compare plus de deux population ! On va donc utiliser le test de Kruskal-Wallis ou le modèle de l'ANOVA:
+#### Répartition de l'IMC en fonction du genre
 
 ```{r}
-## Cutting biometry$age into biometry$age_rec
-biometry$age_rec <- cut(biometry$age, include.lowest=FALSE,  right=TRUE, breaks=c(0, 20, 50,100))
-
-biometry$age_rec <- as.ordered(biometry$age_rec)
-
-#skimr::skim(biometry)
-
+chart(data = biometry, ~factor(sequences) %fill=% genre ) +
+  geom_bar(position = "dodge")
 ```
 
-##### Analyses
+Lorsqu'on compare les hommes et les femmes, on remarque que le pourcentage de femmes est plus importante pour la catégorie "normal" et "souspoid". Et le pourcentage d'homme est plus important pour le "surpoid" et "obese".On peut donc constater que les hommes ont un pourcentage de "surpoids" et "obese" plus important que les femmes.
 
-Nous pourions comparer chaque groupe l'un avec l'autre c'est long et nous ne le ferons pas car à chaque test nous prenons un risque de nous tromper. Le risque de se tromper au moins une fois dans l’ensemble des tests est alors décuplé en cas de tests multiples.
+#### Répartition du tour de poignet en fonction du genre 
+
+```{r}
+filter (., tour_poignet >0 )%>.%
+group_by(., genre)%>.%
+summarise(.,
+  "moyenne tour de poignet" = mean(tour_poignet))%>.%
+head(.)
+```
+il y a une différence mais bon savoir si cette différence entre homme et femme a comme lien avec l'imc je suis pas convaincu.
+
+### Les différences lié à l'âge
+
+```{r}
+
+group_by(biometry, categorie_age)%>.%
+
+summarise(.,
+  "moyenne taille" = mean(taille), 
+  "moyenne masse" = mean(masse))%>.%
+
+head(.)
+```
+
+On remarque sur ces moyennes que les personnes agés sont en moyenne plus petit mais elles ont un poids un peu près identique a celui des adultes. Les jeunes adultes ont une taille un peu près identique à celle des adultes cependant leur moyenne pour le poids est plus faible. Cela s'explique par le faite que les jeunes viennent de terminer leur croissance et le corps utilse des ressources pour grandir. Par la suite le corps adulte se nourrit pour survivre, il n'avait plus besoin de nourriture supplémentaire pour sa croissance.
+
+#### Etude de la masse en fonction ds catégories d'age.
+
+Imaginons que nous voulons comparer la masse corrigée des individus en fonction de leur age (on formera une variable facteur en formant des groupes d'ages(plus de deux)).
+
 
 ##### Graphiques et visualisations
 
@@ -527,9 +385,13 @@ biometry %>.%
 
 ##### Analyses
 
-On semble voir une différence entre les différentes classes mais cette différence est t'elle significatice ou npas ? pour le savoir on va réaliser  un test de Kruskal-Wallis ou utiliser le modèle de l'ANOVA:
+On semble voir une différence entre les différentes classes mais cette différence est t'elle significatice ou pas ? pour le savoir on va réaliser  un test de Kruskal-Wallis ou utiliser le modèle de l'ANOVA:
 
 ##### ANOVA ou Kruskal-Wallis ?
+
+Nous pourions comparer chaque groupe l'un avec l'autre c'est long et nous ne le ferons pas car à chaque test nous prenons un risque de nous tromper. Le risque de se tromper au moins une fois dans l’ensemble des tests est alors décuplé en cas de tests multiples.
+
+On ne peut plus utiliser le test de student ou de wilcoxon car un compare plus de deux population ! On va donc utiliser le test de Kruskal-Wallis ou le modèle de l'ANOVA:
 
 test anova:
 
@@ -560,7 +422,7 @@ bartlett.test(data = .,log(masse_corr) ~ age_rec)
 
 ici la p-value est suppérieur a alpha(0.05) on peut donc utiliser l'ANOVA avec log(masse-corr)
 
-###### Visualisation:
+##### Visualisation de la nouvelle variable:
 
 ```{r}
 biometry %>.%
@@ -595,7 +457,7 @@ anova. %>.%
   labs(x = "Theoretical quantiles", y = "Standardized residuals") +
   ggtitle("Normal Q-Q")
 ```
-on observe que la distribution est non normale pour les valeurs plus importante on prèferera donc utiliser le modèle non paramétrique du test de Kruskal-Wallis
+on observe que la distribution est non normale pour les valeurs plus importante on prèferera donc utiliser le modèle non paramétrique du test de Kruskal-Wallis.
 
 ##### Test de Kruskal-Wallis
 
@@ -625,9 +487,133 @@ summary(kw_comp. <- nparcomp::nparcomp(data = biometry, masse_corr ~ age_rec))
 plot(kw_comp.)
 ```
 
-##### Discussion
+##### Discussion du test de Kruskal 
 
 Ici, toutes les différences sont considérées comme significatives sauf  la comparaison des [20-50]-[50-100] avec une valeur P tout juste non significative de 6.833583e-02 mais à prendre avec des pincettes étant donné sa proximité du seuil.
+
+
+#### Etude de la relation masse <-> taille en fonction de la catégorie d'âge.
+
+```{r}
+chart(data= biometry, taille ~ masse %col=% tranche_d_age) +
+  geom_point()+ geom_smooth(se= FALSE)
+```
+Sur le graphique, ce graphique est trés interessant car grâce à lui on constate que la taille et le poids varie bien en fonction de l'âge. Pour les personnes agés on constate une incohérence dans la ligne tracé. La raison pourrait être celle du faite que notre échantillonnage comporte peu de personnes agés.
+
+#### Répartition de l'IMC  en fonction des catégories d'age.
+
+```{r}
+chart(data = biometry, ~factor(sequences) %fill=% tranche_d_age ) +
+  geom_bar(position = "dodge") + coord_flip()
+```
+Ce graphique est intéressant. Grace à ce graphe, on remarque que notre échantillonage aléatoire n'est pas parfait en effet il y a une grande quantité de jeune individus et très peu d'individus agés.Il y a même aucun individu agés dans la catégorie sous-poids. 
+Mais si on passe au dessus des erreurs d'échantillonnage les valeurs sont intéressant. Le quantité de jeune en sous-poids et environ égal à celle du surpoids. Pour les sujets adutles c'est une tout autre histoire, il y a presqu'aucun pour les sous-poids et ils sont beaucoup plus nombreux pour les surpoids. En conclusion, ce graphique nous conforte dans nos affrimations dites plus haut: Plus les individus vieillissent plus leur IMC grandit.
+
+```{r}
+
+
+chart(biometry, ~ age_rec %fill=% age_rec) +
+  geom_bar() + coord_flip()
+
+biometry %>.%
+  filter(., rapport_imc == "normal" ) %>.%
+  chart(., ~ age_rec %fill=% age_rec) +
+  geom_bar() + coord_flip()
+
+
+
+
+
+```
+
+```{r}
+group_by(biometry, age_rec , rapport_imc)%>.%
+summarise (., n = n() )%>.%
+spread(., key = "rapport_imc" , value="n")%>.%
+
+head(.)
+```
+
+
+
+## Causes pouvant influencer l'IMC de nos individus.
+
+
+
+### Alcool
+
+```{r}
+biometry_alcoolA <-  filter (biometry2,sequences == "souspoid"  )
+biometry_alcoolA <- summarise (biometry_alcoolA, " souspoid" = mean(alcool))
+
+biometry_alcoolB <-  filter (biometry2,sequences == "obese"  )
+biometry_alcoolB <- filter (biometry_alcoolB, alcool != "NA")
+
+biometry_alcoolB <- summarise (biometry_alcoolB, " obèses" = mean(alcool))
+
+biometry_alcoolC <-  filter (biometry2,sequences == "surpoid"  )
+biometry_alcoolC <- filter (biometry_alcoolC, alcool != "NA")
+biometry_alcoolC <- summarise (biometry_alcoolC, "surpoid" = mean(alcool))
+
+biometry_alcoolD <-  filter (biometry2,sequences == "normal"  )
+biometry_alcoolD <- filter (biometry_alcoolD, alcool != "NA")
+
+biometry_alcoolD <- summarise (biometry_alcoolD, "normaux" = mean(alcool))
+
+biometry_alcool <- bind_cols( biometry_alcoolA, biometry_alcoolD, biometry_alcoolC, biometry_alcoolB)
+knitr::kable(biometry_alcool, digits = 2)
+
+```
+On constate que la moyenne d'alcool pour les différents groupes ("souspoids", "normal", "surpoids","obèse") augmente en même temps que le IMC , on peut donc faire une corrélation entre les 2 variables. Ce lien constiste à dire que la consommation d'alcool entraine l'augmentation de l'IMC cependant il faut prendre ces résultats avec précautions car nous avons des valeurs extrèmes qui faussent notre moyenne est l'écart des valeurs réelles de la majorité de la population. 
+
+```{r}
+p=ggplot(biometry, aes(x= alcool, y= IMC , color= sequences, shape= genre)) + 
+    geom_point(size=1, alpha=0.6)
+
+ggplotly(p)
+```
+
+```{r}
+
+chart(data = biometry, ~ alcool %fill=% sequences | sequences) +
+  geom_histogram(data = select(biometry, -sequences), fill = "grey", bins = 25) + 
+  geom_histogram(show.legend = FALSE, bins = 25, na.rm = FALSE) +
+  ylab("Effectifs") +
+  scale_fill_viridis_d()
+chart(data = biometry, alcool ~ sequences %fill=% sequences) + geom_boxplot(show.legend = FALSE)
+
+```
+Les graphiques nous confirment nos premières analyses . Les individus en sous-poids prennent moins d'alcool que les individus en surpoids.
+On peut également mettre en lien, l'age et l'alcool car on a constaté plus tôt que les individus jeunes sont en général plus en sous-poids que les adultes et les personnes agés. Dans notre catégorie de jeune, il y a des personnes ayant un age inférieur à 16 ans qui est la limite d'autorisation pour l'alcool, les individus plus agé sont plus confronté à l'alcool que les jeunes.
+Attention cependant, beaucoup d'autres facteurs peut interférer.
+
+
+
+........
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
