@@ -850,36 +850,27 @@ L'IMC augmente donc bien en fonction de l'age.
 Notre échantillonage aléatoire n'est pas parfait en effet il y a une grande quantité de jeune individus et très peu d'individus plus agés. Lorsqu'on sépare les catégories, on ressent aussi qu'il y a des erreurs au niveau de l'échantillonage qui ne semble pas assez aléatoire, mais si on passe au-dessus de cela, on peut observer aussi des valeurs très surprenants, en effet pour le groupe sous-poids, nous n'avons pas d'individus au delà de 40 ans. Pour la catégorie normal on remarque que la quantité d'individus varie en fonction de l'âge.Le pourcentage de personne dépassant les 40 ans dans le groupe surpoids et obèses est beaucoup plus important que dans le groupe de souspoids qui est égale à 0 et le groupe normal.
 Mais pourquoi ? L'explication qui pourrait être apportez et que lorsque l'individus est jeune, il est en croissance et il a besoin de beaucoup de nutriment pour subvenir à ces besoins vitaux et également permettre sa croissance. Lorsque l'on devient adulte, il n'y a plus ce facteur croissance qui diminuaient le poids, il faut ajouter que lorsqu'on vieille le corps ce tas légerement. Ce tassament va diminué la taille et influencer l'augmentation de l'IMC.
 
-
-
-
-
-
----> cause encore à expliquer
-
-On constate que la moyenne d'alcool pour les différents groupes ("souspoids", "normal", "surpoids","obèse") augmente en même temps que le IMC , on peut donc faire une corrélation entre les 2 variables. Ce lien constiste à dire que la consommation d'alcool entraine l'augmentation de l'IMC cependant il faut prendre ces résultats avec précautions car nous avons des valeurs extrèmes qui faussent notre moyenne est l'écart des valeurs réelles de la majorité de la population. 
-
-Les graphiques nous confirment nos premières analyses . Les individus en sous-poids prennent moins d'alcool que les individus en surpoids.
+La troisième partie de nos analyses s'attardent sur les causes pouvant influencer l'IMC. Il y a divers facteurs qui influence l'IMC, le premier mesurés dans notre étude est l'alcool.
+la moyenne d'alcool pour les différents groupes ("souspoids", "normal", "surpoids","obèse") augmente en même temps que le IMC , on peut donc faire une lien entre les 2 variables. Ce lien constiste à dire que la consommation d'alcool entraine l'augmentation de l'IMC. Les individus en sous-poids prennent moins d'alcool que les individus en surpoids.
 On peut également mettre en lien, l'age et l'alcool car on a constaté plus tôt que les individus jeunes sont en général plus en sous-poids que les adultes et les personnes agés. Dans notre catégorie de jeune, il y a des personnes ayant un age inférieur à 16 ans qui est la limite d'autorisation pour l'alcool, les individus plus agé sont plus confronté à l'alcool que les jeunes.
-Attention cependant, beaucoup d'autres facteurs peut interférer.
-
-Pour les moyennes du grignotage, le groupe du "souspoids" à la moyenne la plus forte est le groupe "obèse" possède la moyenne la plus faible. Ces résultats sont très intéressant on peut voir un lien entre l'IMC et le grignotage.En moyenne les personnes grignotant beaucoup ont un poids plus faible.Cependant les différences entre les moyennes sont relativement faible et il faut faire attention aux valeurs extrèmes qui peuvent influencé la moyenne. Il faut prendre ces résultats avec des pincettes car nous avons pas déterminer le type de grignotage : fruits ou friandises.
-
-Sur les graphiques, on constate qu'il n'y a pas de différences significatives entre les individus
-Les moyennes étaient légèrement différentes à cause des valeurs extrèmes. 
-
-Le groupe des "souspoids" possède la moyenne la plus faible et le groupe"obèse" possède la moyenne la plus grande. On peut conclure que les protéines animales ont une influence avec la prise de poids. Pour la catégorie "normal"et"surpoids"les valeurs sont assez proche. Il doit y avoir un autre facteur qui doit influencé l'IMC.
-
-Le graphique nous révèle que les personnes en sous-poids prennent une quantité moins importante de viande. Pour le groupe "obèse". Le manque de protéine animal entraine le sous-poids.Et la surconsommation de protéine animal nous indique que cela peut entrainer une augmentation de l'IMC.
-
-Les individus fesant le plus de sport sont ceux avec l'IMC le plus faible. On peut en conclure que le sport diminue l'IMC des individus. Cependant on peut remarqué que le groupe fesant le plus de sport est le groupe normal et non le groupe sous-poids. 
-La raison de cette variation inattendu sont les autres facteurs influençant l'IMC.Le groupe "normal" fait plus de sport mais il mange également plus de fastfood.
-
-Les graphiques nous montrent bien que les 2 groupes les plus fins sont les groupes fesant le plus de sports. Le sport influence la diminution de l'IMC
-
-On ne peut pas tirer de conclusions pouvant influencer l'IMC, les autres facteurs mesurés semble avoir plus d'importance que l'activité professionel. Les raisons de se méfier des valeurs sont que les groupes obèse et le groupe sous-poids ont environ les mêmes proportions alors que l'IMC est très différents entre les 2. 
+L'autre facteur mesuré est le grignotage, les moyennes du grignotage, le groupe du "souspoids" à la moyenne la plus forte est le groupe "obèse" possède la moyenne la plus faible.Cependant les différences entre les moyennes sont relativement faible et il faut faire attention aux valeurs extrèmes qui peuvent influencé la moyenne. Il faut prendre ces résultats avec des pincettes car nous avons pas déterminer le type de grignotage : fruits ou friandises. L'analyse graphique confirme nos doutes et n'apporte pas de différences significatives entre les individus. Les moyennes étaient légèrement différentes à cause des valeurs extrèmes. 
+La 3ème variable pouvant être une cause de l'influence de l'IMC c'est la proportion de protéine animal ingéré.Le groupe des "souspoids" possède la moyenne la plus faible et le groupe"obèse" possède la moyenne la plus grande. On peut conclure que les protéines animales ont une influence avec la prise de poids. Le manque de protéine animal entraine le sous-poids.Et la surconsommation de protéine animal nous indique que cela peut entrainer une augmentation de l'IMC. Pour la catégorie "normal"et"surpoids"les valeurs sont assez proche. Il doit y avoir un autre facteur qui doit influencer l'IMC. Le manque de protéine animal entraine le sous-poids.Et la surconsommation de protéine animal nous indique que cela peut entrainer une augmentation de l'IMC.
+Pour la 4ème ligne de données qui est le fastfood, les résultats sont moins significatifs.On remarque que la moyenne la plus faible est attribuée à la catégorie du "souspoids", cependant la moyenne la plus forte est celle du groupe normal.Dans les groupes "souspoids","surpoids" et "obèse" on a une augmentation lié à la montée du IMC. Le groupe"normal" ne suit pas notre hypothèse, les différentes raisons sont que soit les fastfood n'ont pas de lien avec la prise de point ou soit nous avons oublié de tenir compte d'une autre variable pouvant influencer sur l'IMC. Dans l'analyse graphique, le grouppe sous-poids semble bien manger moins de fastfood mais les 3 autres groupes n'ont pas de caleurs significatives. Il doit y avoir un autre facteur qui influence les 3 groupes. Surtout pour le groupe normal qui en général mange environ une même quantité de fastfood que le groupe obèse.
+Le 5ème facteur d'influence est le sport, ici aussi on trouve un influence. Les individus fesant le plus de sport sont ceux avec l'IMC le plus faible.Le sport diminue doncl'IMC des individus. Cependant on peut remarqué que le groupe fesant le plus de sport est le groupe normal et non le groupe sous-poids. 
+La raison de cette variation inattendu sont les autres facteurs influençant l'IMC.Le groupe "normal" fait plus de sport mais il mange également plus de fastfood. L'IMS étant influencé par tellement de facteur, certains facteurs se compense et s'équilibre pour donner un IMC dans la catégorie Normal mais pouvant aller dans les extrêmes comme une consommation importante d'aliments augmentant le poids et beaucoup d'heures de sport diminuant le poids.
+La 6ème valeur mesurée est l'activité professionel, on ne peut pas tirer de conclusions pouvant influencer l'IMC, les autres facteurs mesurés semble avoir plus d'importance que l'activité professionel. Les raisons de se méfier des valeurs sont que les groupes obèse et le groupe sous-poids ont environ les mêmes proportions alors que l'IMC est très différents entre les 2. 
 Les raisons de ces incohérences pourrez être dû aux autres valeurs, les individus ayant une vie sédentaire vont la compenser en fesant plus de sport.
-La séparation entre les différents groupes n'est pas précis. A partir que quel moment , on peut considèré qu'un individu fait une activité professionnel intermédiaire.
+La séparation entre les différents groupes n'est également pas précis. A partir de quel moment, on peut considéré qu'un individu fait une activité professionnel intermédiaire?
+
+Voilà les analyses qui ont été réalisé pendant ce rapport, il y a évidemment plusieurs éléments qui peuvent être améliorer et plusieurs erreurs qui ont été faites lors de l'acquiesement des données. Notre jeu de données aurez pu également être mieux organisé et plus ciblé sur notre étude basé sur l'IMC.
+
+----->
+encore décrire les éléments qu'il faut améliorer
+
+
+
+
+
 
 # Conclusion
 
