@@ -12,6 +12,9 @@ Travail en groupe par rapport à l'étude de la biométrie d'une population de B
 L' IMC   ou indice de masse corporelle est une facon de mesurer la corpulence d'une personne.
 Cette mesure à été inventée par Adolphe Quetelet ( un belge ) et se calcule comme valant le carré de la taille ( en mètre ) divisée par le masse ( en kg ).
 
+![l'homme de Vésuve](figure/image.jpg)
+
+
 # But
 
 Notre but est déterminer le taux la répartition de l'IMC dans notre échantillonnage. Ainsi qu'essayer de déduire les causes pouvant influencer ces répartition de l'IMC.
