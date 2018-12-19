@@ -152,7 +152,7 @@ Nos groupes d'IMC ne sont pas répartri équitablement dans la population on obs
 
 #### Répartition de la masse en fonction du genre
 
-Est ce que la masse corrigée des personnes est identique dans la population selon le genre ou es ce que l'un des genres est en moyenne plus lourd que l autre ?:
+Est ce que la masse corrigée des personnes est identique dans la population selon le genre ou est-ce que l'un des genres est en moyenne plus lourd que l autre ?:
 
 observons ceci tout d'abord par une représentation graphique pour avoir une idée.
 
@@ -337,7 +337,7 @@ head(.)
 
 #### Analyse
 
-On remarque sur ces moyennes que les 60-110 ont une taille plus petite mais possède un poids dans les alentour des individus adulte. Les 0-20 ont une taille un peu près identique à celle des adultes cependant leur moyenne pour le poids est plus faible. On peut comprendre que l'IMC des personne agés sera plus important que l'IMC des jeunes. Cela s'explique par le faite que les jeunes viennent de terminer leur croissance et le corps utilise des ressources pour grandir. Par la suite le corps adulte se nourrit pour survivre, il n'avait plus besoin de nourriture supplémentaire pour sa croissance.
+On remarque sur ces moyennes que les 60-110 ont une taille plus petite mais possède un poids dans les alentours des individus adulte. Les 0-20 ont une taille un peu près identique à celle des adultes cependant leur moyenne pour le poids est plus faible. On peut comprendre que l'IMC des personne agés sera plus important que l'IMC des jeunes. Cela s'explique par le faite que les jeunes viennent de terminer leur croissance et le corps utilise des ressources pour grandir. Par la suite le corps adulte se nourrit pour survivre, il n'avait plus besoin de nourriture supplémentaire pour sa croissance.
 
 #### Etude de la masse en fonction ds catégories d'age.
 
@@ -610,7 +610,6 @@ knitr::kable(biometry_grignotage, digits = 2)
 
 #### Analyse
 
-
 Pour les moyennes du grignotage, le groupe du "souspoids" à la moyenne la plus forte est le groupe "obèse" possède la moyenne la plus faible. Ces résultats sont très intéressant on peut voir un lien entre l'IMC et le grignotage.En moyenne les personnes grignotant beaucoup ont un poids plus faible.Cependant les différences entre les moyennes sont relativement faible et il faut faire attention aux valeurs extrèmes qui peuvent influencé la moyenne. Il faut prendre ces résultats avec des pincettes car nous avons pas déterminer le type de grignotage : fruits ou friandises.
 
 ```{r}
@@ -864,16 +863,16 @@ La séparation entre les différents groupes n'est également pas précis. A par
 
 Voilà les analyses qui ont été réalisé pendant ce rapport, il y a évidemment plusieurs éléments qui peuvent être améliorer et plusieurs erreurs qui ont été faites lors de l'acquiesement des données. Notre jeu de données aurez pu également être mieux organisé et plus ciblé sur notre étude basé sur l'IMC.
 
------>
-encore décrire les éléments qu'il faut améliorer
+Il y a quelques erreurs au niveau de notre échantillonage la première est le nombre d'individus qui n'est pas assez important et qui peut donc fausser les moyennes.A cause de ce petit nombre d'individus la catégorie sous-poids est très peu représenter et donc une valeur extrêmes peut très vite tout fausser. Nous étions 40 personnes environ à récolter chaqu'un 7 résultats ce qui fait dans les meilleurs cas 280 individus ( dans les meilleurs cas car il peut y avoir des valeurs "NA").
+Une autre erreur au niveau de l'échantillonage est qu'il n'est pas assez aléatoire. Il y a par exemple une proportion de jeune beaucoup plus supérieur à la proportion des personnes agées.
+L'autre erreur qui a été commis lors de la prise de données, c'est la précision. Pour le grignotage par exemple il n'y a pas été déterminé le type de grignotage : fruits ou friandises. Pour les protéines animales, il aurait peut-être été bien de différencier si il s'agissait de poisson , de volaille ou de viande bovin car ces différentes viandes n'ont pas le même effet sur le poids.Egalement pour l'activité professionnel, il y a une erreur d'imprécision. Les différents groupements n'étant pas clairement défini il est difficile de faire des analyses pertinentes sur cette variable.
 
-
-
-
-
+Les éléments qui nous pas été abordés dans ce rapport et qui serait intéressant à analyser c'est par exemple les conséquences de l'augmentation de IMC en fonction de groupe formés. Par exemple pour le genre, les femmes ne prennent pas du poids de la même façon que les hommes. Autre élèments important qui serait intéressants à analyser c'est d'autre facteur pouvant influencer un IMC comme par exemple la génétique qui n'a pas été abordé. Le point faible de cette analyse est aussi que l'on a pris chaque facteurs séparément alors qu'il interfère tous entre eux comme par exemple la catégorie normal qui prennaient une trop grande quantité de fastfood mais le compensaient par le sport. Autre chose qui serait intéressant à mesurer ça serait des facteurs lier à la taille car nous avons eessentiellement regarder au poids des individus. Mais la taille aussi influence l'IMC.
+On a remarqué les facteurs avaient tous plus ou moins d'influence sur l'IMC, donc l'idée qui pourrait être proposé est d'essayer de numéroter chaque facteur d'une échelle de 1 à 5. Puis additionner toute les valeurs que notre échelle à mesurer pour chaque facteur et ensuite comparer la somme obtenue avec l'IMC de l'individu. 
 
 # Conclusion
 
-
+En conclusion, l'IMC dépends de l'age et du genre de l'individu à cause de raisons naturel (croissance) ou psycologique ( régime surtout chez les filles). Ensuite on a également beaucoup de facteurs qui influencent les principaux sont l'alcool,les portéines animals, les fastfood et le sport.
+Malheureusment notre étude contient beaucoup d'imperfection qui est important de rectifier dans les études à venir. 
 
 
