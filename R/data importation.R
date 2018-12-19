@@ -28,6 +28,6 @@ biometry$age_rec <- cut(biometry$age, include.lowest=FALSE,  right=TRUE,
 visdat::vis_dat(biometry)
 head(biometry)
 
-write$rds(biometry, file = "../data/biometry.rds", compress = "gz")
+write$rds(biometry, file = "data/biometry.rds", compress = "gz")
 
 

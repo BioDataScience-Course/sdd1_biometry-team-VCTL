@@ -17,7 +17,7 @@ Cette mesure à été inventée par Adolphe Quetelet ( un belge ) et se calcule 
 
 # But
 
-Notre but est déterminer le taux la répartition de l'IMC dans notre échantillonnage. Ainsi qu'essayer de déduire les causes pouvant influencer ces répartition de l'IMC.
+Notre but est déterminer la répartition de l'IMC dans notre échantillonnage. Ainsi qu'essayer de déduire les causes pouvant influencer ces répartition de l'IMC.
 
 # Matériel et méthodes utilisées
 
@@ -54,21 +54,6 @@ library(ggridges)
 ```
 
 
-## Tableau comparatif:
-
-### Moyenne du poids et moyenne de taille 
-
-```{r}
-
-filter (biometry, taille>0, masse_corr >0 , )%>.%
-
-  summarise(. ,
-  "moyenne taille" = mean(taille), 
-  "moyenne masse" = mean(masse_corr)) %>.%
-
-  knitr::kable(., digits = 2)
-
-```
 ## Répartition de l' IMC
 
  On peut se demander si dans notre population on a autant de personne pour lequels l'IMC est dit : obeses , surpoids , souspoids et pour finir normal.
@@ -84,22 +69,7 @@ chart(data = biometry, ~ IMC_RAP %fill=%IMC_RAP) +
 
 Le pourcentage le plus important est celui de la catégorie "normal". On a ensuite les "surpoids" puis les "obèses" pour terminer par les "sous-poids". La partie la plus faible de la population est le groupe des "sous-poids". Ces pourcentages correspondent bien à la zone d'échantillonage en effet la majorité des individus sont situé dans des régions développés, avec des ressources alimentaires suffisantes.
 
-```{r}
 
-a <- chart(biometry, ~ IMC_RAP) +
-  geom_bar() + coord_flip()
-
-b <-chart(biometry, ~ age_rec %fill=% age_rec) +
-  geom_bar() + coord_flip()
-
-c <- biometry %>.%
-  filter(., IMC_RAP == "normal" ) %>.%
-  chart(., ~ age_rec %fill=% age_rec) +
-  geom_bar() + coord_flip()
-
-combine_charts(list (a,b,c))
-
-```
 
 ```{r}
 group_by(biometry, age_rec , IMC_RAP)%>.%
@@ -147,6 +117,24 @@ Nos groupes d'IMC ne sont pas répartri équitablement dans la population on obs
 
 
 ## Différence entre les individus 
+
+
+### Moyenne du poids et moyenne de taille 
+
+```{r}
+
+filter (biometry, taille>0, masse_corr >0 , )%>.%
+
+  summarise(. ,
+  "moyenne taille" = mean(taille), 
+  "moyenne masse" = mean(masse_corr)) %>.%
+
+  knitr::kable(., digits = 2)
+
+```
+
+
+
 
 ### Les différences liées au genre
 
@@ -498,22 +486,7 @@ chart(data = biometry, ~IMC_RAP %fill=% age_rec ) +
 Ce graphique est intéressant. Grâce à ce graphe, on remarque que notre échantillonage aléatoire n'est pas parfait en effet il y a une grande quantité de jeune individus et très peu d'individus plus agés. 
 Mais si on passe au dessus des erreurs d'échantillonnage, les valeurs sont intéressant.Pour le groupe sous-poids, nous n'avons pas d'individus au delà de 40 ans. Pour la catégorie normal on remarque que la quantité d'individus varie en fonction de l'âge.Le pourcentage de personne dépassant les 40 ans dans le groupe surpoids et obèses est beaucoup plus important que dans le groupe de souspoids qui est égale à 0 et le groupe normal. En conclusion, ce graphique nous conforte dans nos affrimations dites plus haut: Plus les individus vieillissent plus leur IMC grandit.
 
-```{r}
 
-
-chart(biometry, ~ age_rec %fill=% age_rec) +
-  geom_bar() + coord_flip()
-
-biometry %>.%
-  filter(., IMC_RAP == "normal" ) %>.%
-  chart(., ~ age_rec %fill=% age_rec) +
-  geom_bar() + coord_flip()
-
-
-
-
-
-```
 
 ```{r}
 group_by(biometry, age_rec , IMC_RAP)%>.%
@@ -610,7 +583,7 @@ knitr::kable(biometry_grignotage, digits = 2)
 
 #### Analyse
 
-Pour les moyennes du grignotage, le groupe du "souspoids" à la moyenne la plus forte est le groupe "obèse" possède la moyenne la plus faible. Ces résultats sont très intéressant on peut voir un lien entre l'IMC et le grignotage.En moyenne les personnes grignotant beaucoup ont un poids plus faible.Cependant les différences entre les moyennes sont relativement faible et il faut faire attention aux valeurs extrèmes qui peuvent influencé la moyenne. Il faut prendre ces résultats avec des pincettes car nous avons pas déterminer le type de grignotage : fruits ou friandises.
+Pour les moyennes du grignotage, le groupe du "souspoids" à la moyenne la plus forte est le groupe "surpoids" possède la moyenne la plus faible. Ces résultats sont très intéressant on peut voir un lien entre l'IMC et le grignotage.En moyenne les personnes grignotant beaucoup ont un poids plus faible.Cependant les différences entre les moyennes sont relativement faible et il faut faire attention aux valeurs extrèmes qui peuvent influencé la moyenne. Il faut prendre ces résultats avec des pincettes car nous avons pas déterminer le type de grignotage : fruits ou friandises.
 
 ```{r}
 p=ggplot(biometry, aes(x= grignotage, y= IMC , color= IMC_RAP, shape= genre)) + 
@@ -688,7 +661,7 @@ chart(data = biometry, proteine_animale ~ IMC_RAP %fill=% IMC_RAP) + geom_boxplo
 
 #### Analyse
 
-Le graphique nous révèle que les personnes en sous-poids prennent une quantité moins importante de viande. Pour le groupe "obèse". Le manque de protéine animal entraine le sous-poids.Et la surconsommation de protéine animal nous indique que cela peut entrainer une augmentation de l'IMC.
+Le graphique nous révèle que les personnes en sous-poids prennent une quantité moins importante de viande. Le manque de protéine animal entraine le sous-poids.Et la surconsommation de protéine animal nous indique que cela peut entrainer une augmentation de l'IMC.
 
 ### Fastfood
 
@@ -773,7 +746,7 @@ La raison de cette variation inattendu sont les autres facteurs influençant l'I
 ```{r}
 nbins <- 25
 chart(data = biometry, ~ acti_physique %fill=% IMC_RAP | IMC_RAP) +
-  geom_histogram(data = select(biometry2, -IMC_RAP), fill = "grey", bins = nbins) + 
+  geom_histogram(data = select(biometry, -IMC_RAP), fill = "grey", bins = nbins) + 
   geom_histogram(show.legend = FALSE, bins = nbins, na.rm = FALSE) +
   ylab("Effectifs") +
   scale_fill_viridis_d()
