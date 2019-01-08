@@ -69,6 +69,7 @@ chart(data = biometry, ~ IMC_RAP %fill=%IMC_RAP) +
 
 Le pourcentage le plus important est celui de la catégorie "normal". On a ensuite les "surpoids" puis les "obèses" pour terminer par les "sous-poids". La partie la plus faible de la population est le groupe des "sous-poids". Ces pourcentages correspondent bien à la zone d'échantillonage en effet la majorité des individus sont situé dans des régions développés, avec des ressources alimentaires suffisantes.
 
+> GE: attention de ne pas mélanger la description des résultats et la discussion de ces résultats. `les pourcentages correspondent bien à la zone d'échantillonage en effet la majorité des individus sont situé dans des régions développés, avec des ressources alimentaires suffisantes.` La phrase ci-dessus fait plutot partie d'une analyse des données et pas de la description de ces dernières. Nous sommes donc plutot dans une discussion des résultats. 
 
 
 ```{r}
@@ -162,12 +163,12 @@ Sur le graphique, il semble que les hommes (sex == "h") tendent à avoir une mas
 
 ##### Test de student
 
+
 voici nos 2 hypothèses :
 
 H0:la différence des moyennes entre mesures pour les femmes et pour les hommes= 0
 
 H1:la différence des moyennes entre mesures pour les femmes et pour les hommes≠ 0
-
 
 
 test de student :
@@ -182,8 +183,13 @@ Prenons une valeur de α de 5% , (α = 0.05).On compare notre valeur de α avec 
 
 comme p <<<< α on rejette Ho qui se situe dans la zone de rejet.
 
+> GE: il est lus intéressant d'exprimer le résultats d'un test statistique en français et d'éviter  p <<<< α
+
+
 ##### Representation graphique des distributions:
 
+
+> l'instruction filter() n'est pas assigné et ne sert donc pas à grand chose. De ce fait vous ne faites qu'afficher un tableau de données. 
 
 ```{r}
 filter(biometry, genre !="NA",masse_corr !="NA")
@@ -192,8 +198,6 @@ biometry %>.%
 group_by(.,genre) %>.%
 summarise(.,"moyenne" = mean(masse_corr),
 "ecart_type" = sd(masse_corr))
-
-
 
 ```
 
@@ -231,6 +235,8 @@ le quantile correspondant à l'hypothèse H0 (ligne verte)est situé dans la zon
 ##### Discussion du test de student
 
 On en conclu donc que l'hypothèse H1 est correcte et que la moyenne de la masse corrigée dans notre population sera significativement plus importante chez les hommes que chez les femmes.
+
+> GE: vous en concluez dans une discussion cela ne va pas comme terme
 
 #### Répartition de la taille en fonction du genre
 

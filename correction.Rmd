@@ -1,0 +1,30 @@
+---
+title: "Correction globale"
+author: "Engels Guyliann"
+output: html_notebook
+---
+
+## Note
+
+La correction est en deux phases : 
+
+- correction globale qui est présentée dans ce fichier
+- correction fine du rapport dans le rapport directement à l'aide de `block quotes` > GE: que vous pouvez facilement rechercher.
+
+## Auteurs du travail 
+
+- Clément Tourbez
+- Lucie Marin
+- Vincent Florquin
+- Carine Dongmongouni
+
+## Remarques générales
+
+- Carine n'a pas participé à ce travail (contributors sur Github)
+
+- Ce travail est très bien organisé. L'utilisation d'un copie locale des données provenant du net est correcte.
+
+- La comparaison des workflows a correctement été effectuée
+
+- Très bon travail 
+
